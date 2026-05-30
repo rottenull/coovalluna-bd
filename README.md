@@ -48,8 +48,7 @@ coovalluna-bd/
 ├── README.md
 │
 ├── docs/
-│ ├── primera_entrega.pdf
-│ └── segunda_entrega.pdf
+│ └── informe.pdf
 │
 ├── base_de_datos/
 │ ├── coovalluna_ddl.sql
