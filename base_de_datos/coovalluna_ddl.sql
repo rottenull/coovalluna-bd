@@ -1,9 +1,3 @@
--- ============================================================
--- Script DDL - Sistema COOVALLUNA Ltda.
--- Base de Datos Relacionales 750006C - Gr. 52
--- Período Académico Febrero - Junio 2026
--- ============================================================
-
 CREATE TABLE AGENCIA (
 	CODIGO INT PRIMARY KEY,
 	NOMBRE VARCHAR(80) NOT NULL,
