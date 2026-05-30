@@ -48,7 +48,8 @@ coovalluna-bd/
 ├── README.md
 │
 ├── docs/
-│ └── informe.pdf
+│ ├── informe.pdf
+│ └── diagrama_tablas.png
 │
 ├── base_de_datos/
 │ ├── coovalluna_ddl.sql
