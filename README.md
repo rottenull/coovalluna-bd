@@ -14,7 +14,7 @@ El sistema está diseñado para la Cooperativa de Ahorro y Crédito COOVALLUNA L
 
 ## Estado del proyecto
 
-### Primera Entrega — 10 de mayo de 2026 ✅
+### Primera Entrega — 10 de mayo de 2026 (4.8) ✅
 
 | Componente | Peso | Estado |
 |---|---|---|
@@ -22,7 +22,7 @@ El sistema está diseñado para la Cooperativa de Ahorro y Crédito COOVALLUNA L
 | Modelo Entidad-Relación en notación Chen | 65% | ✅ Entregado |
 | Mockups de baja fidelidad | 15% | ✅ Entregado |
 
-### Segunda Entrega — 25 de mayo de 2026 ✅
+### Segunda Entrega — 25 de mayo de 2026 (5.0) ✅
 
 | Componente | Peso | Estado |
 |---|---|---|
