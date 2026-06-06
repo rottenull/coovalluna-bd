@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for
 from config import Config
 from routes.auth import auth_bp
+from db import test_tables
 
 app = Flask(
     __name__,
