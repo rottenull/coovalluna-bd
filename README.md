@@ -14,7 +14,7 @@ El sistema está diseñado para la Cooperativa de Ahorro y Crédito COOVALLUNA L
 
 ## Estado del proyecto
 
-### Primera Entrega — 10 de mayo de 2026 ✅
+### Primera Entrega — 10 de mayo de 2026 (4.8) ✅
 
 | Componente | Peso | Estado |
 |---|---|---|
@@ -22,7 +22,7 @@ El sistema está diseñado para la Cooperativa de Ahorro y Crédito COOVALLUNA L
 | Modelo Entidad-Relación en notación Chen | 65% | ✅ Entregado |
 | Mockups de baja fidelidad | 15% | ✅ Entregado |
 
-### Segunda Entrega — 25 de mayo de 2026 ✅
+### Segunda Entrega — 25 de mayo de 2026 (5.0) ✅
 
 | Componente | Peso | Estado |
 |---|---|---|
@@ -43,23 +43,49 @@ El sistema está diseñado para la Cooperativa de Ahorro y Crédito COOVALLUNA L
 
 ## Estructura del repositorio
 ```texto
-coovalluna-bd/
+app/
 │
-├── README.md
+├── backend/
+│   ├── app.py
+│   ├── config.py
+│   ├── db.py
+│   ├── routes/
+│   │   ├── auth.py
+│   │   ├── admin.py
+│   │   ├── asesor.py
+│   │   ├── asociado.py
+│   │   └── reportes.py
+│   └── utils/
+│       └── helpers.py
 │
-├── docs/
-│ ├── primera_entrega.pdf
-│ └── segunda_entrega.pdf
+├── frontend/
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── login.html
+│   │   ├── dashboard_admin.html
+│   │   ├── dashboard_asesor.html
+│   │   ├── dashboard_asociado.html
+│   │   ├── agencias.html
+│   │   ├── empleados.html
+│   │   ├── asociados.html
+│   │   ├── beneficiarios.html
+│   │   ├── cuentas.html
+│   │   ├── movimientos.html
+│   │   ├── creditos.html
+│   │   ├── pagos.html
+│   │   ├── reportes.html
+│   │   └── error.html
+│   │
+│   └── static/
+│       ├── css/
+│       │   └── styles.css
+│       ├── js/
+│       │   └── main.js
+│       └── img/
 │
-├── base_de_datos/
-│ ├── coovalluna_ddl.sql
-│ └── coovalluna_dml.sql
-│
-├── consultas/
-│ └── reportes.sql
-│
-└── app/
-└── (código del frontend — entrega final)
+├── requirements.txt
+├── .env
+└── .gitignore
 ```
 
 
