@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reportes Operativos
+{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">
+    Reportes Operativos
+</h3>
+
+<div class="alert alert-secondary">
+
+    El usuario solo podrá consultar información correspondiente a la agencia que tenga asignada.
+
+</div>
+
+<!-- MENÚ DE REPORTES -->
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+
+        <div class="card h-100">
+
+            <div class="card-body text-center">
+
+                <h5>
+                    Listado de Asociados por Estado
+                </h5>
+
+                <button class="btn btn-secondary mt-3"
+                        onclick="mostrarReporte('reporteAsociados')">
+
+                    Ver Reporte
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card h-100">
+
+            <div class="card-body text-center">
+
+                <h5>
+                    Extracto de Cuenta de Ahorro
+                </h5>
+
+                <button class="btn btn-secondary mt-3"
+                        onclick="mostrarReporte('reporteExtracto')">
+
+                    Ver Reporte
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card h-100">
+
+            <div class="card-body text-center">
+
+                <h5>
+                    Historial de Pagos de Crédito
+                </h5>
+
+                <button class="btn btn-secondary mt-3"
+                        onclick="mostrarReporte('reportePagos')">
+
+                    Ver Reporte
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card h-100">
+
+            <div class="card-body text-center">
+
+                <h5>
+                    Asociados en Mora
+                </h5>
+
+                <button class="btn btn-secondary mt-3"
+                        onclick="mostrarReporte('reporteMora')">
+
+                    Ver Reporte
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- REPORTE ASOCIADOS -->
+
+<div id="reporteAsociados"
+     class="reporte-container">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <strong>
+                Listado de Asociados por Estado
+            </strong>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Estado
+                        </label>
+
+                        <select class="form-select"
+                                name="estado">
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="activo">
+                                Activo
+                            </option>
+
+                            <option value="suspendido">
+                                Suspendido
+                            </option>
+
+                            <option value="retirado">
+                                Retirado
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Tipo Asociado
+                        </label>
+
+                        <select class="form-select"
+                                name="tipo">
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="normal">
+                                Asociado
+                            </option>
+
+                            <option value="fundador">
+                                Fundador
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-3">
+
+                    <button class="btn btn-secondary">
+
+                        Consultar
+
+                    </button>
+
+                    <button type="reset"
+                            class="btn btn-light border">
+
+                        Limpiar Filtros
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <hr>
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Cédula</th>
+                            <th>Nombres y Apellidos</th>
+                            <th>Tipo Asociado</th>
+                            <th>Fecha Afiliación</th>
+                            <th>Productos Activos</th>
+                            <th>Estado</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for asociado in asociados_reporte %}
+
+                        <tr>
+
+                            <td>{{ asociado.cedula }}</td>
+
+                            <td>
+                                {{ asociado.nombre }}
+                            </td>
+
+                            <td>
+                                {{ asociado.tipo }}
+                            </td>
+
+                            <td>
+                                {{ asociado.fecha_afiliacion }}
+                            </td>
+
+                            <td>
+                                {{ asociado.productos }}
+                            </td>
+
+                            <td>
+                                {{ asociado.estado }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="mt-3">
+
+                <button class="btn btn-secondary">
+
+                    Descargar PDF
+
+                </button>
+
+                <button class="btn btn-secondary">
+
+                    Descargar CSV
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- REPORTE EXTRACTOS -->
+
+<div id="reporteExtracto"
+     class="reporte-container d-none">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <strong>
+                Extracto Cuenta de Ahorro
+            </strong>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <label>
+                        Número de Cuenta
+                    </label>
+
+                    <input type="text"
+                           class="form-control">
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label>
+                        Fecha Inicio
+                    </label>
+
+                    <input type="date"
+                           class="form-control">
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label>
+                        Fecha Fin
+                    </label>
+
+                    <input type="date"
+                           class="form-control">
+
+                </div>
+
+            </div>
+
+            <button class="btn btn-secondary mt-3">
+
+                Generar Extracto
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- REPORTE PAGOS -->
+
+<div id="reportePagos"
+     class="reporte-container d-none">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <strong>
+                Historial de Pagos de Crédito
+            </strong>
+
+        </div>
+
+        <div class="card-body">
+
+            <label>
+                Número Crédito
+            </label>
+
+            <input type="text"
+                   class="form-control">
+
+            <button class="btn btn-secondary mt-3">
+
+                Consultar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- REPORTE MORA -->
+
+<div id="reporteMora"
+     class="reporte-container d-none">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <strong>
+                Asociados en Mora
+            </strong>
+
+        </div>
+
+        <div class="card-body">
+
+            <button class="btn btn-secondary">
+
+                Consultar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="border mt-4 p-2 small">
+
+    Los reportes consolidados y los reportes de otras agencias son accesibles únicamente para usuarios con perfil administrador.
+
+</div>
+
+{% endblock %}

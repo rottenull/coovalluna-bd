@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}
+Agencias
+{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">
+
+    Registrar Nueva Agencia
+
+</h3>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <p class="border p-2">
+
+            Complete todos los campos marcados con (*) para registrar una nueva sede en el sistema.
+
+        </p>
+
+        <form method="POST">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Código único (*)
+
+                </label>
+
+                <input type="text"
+                       name="codigo_agencia"
+                       class="form-control">
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Nombre de la Agencia (*)
+
+                </label>
+
+                <input type="text"
+                       name="nombre_agencia"
+                       class="form-control">
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Dirección (*)
+
+                </label>
+
+                <input type="text"
+                       name="direccion"
+                       class="form-control">
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Municipio (*)
+
+                </label>
+
+                <select name="municipio"
+                        class="form-select">
+
+                    <option value="">
+                        Seleccione...
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Teléfono (*)
+
+                </label>
+
+                <input type="text"
+                       name="telefono"
+                       class="form-control">
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    Fecha de Apertura (*)
+
+                </label>
+
+                <input type="date"
+                       name="fecha_apertura"
+                       class="form-control">
+
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+
+                <button type="submit"
+                        class="btn btn-secondary">
+
+                    Guardar Agencia
+
+                </button>
+
+                <button type="reset"
+                        class="btn btn-light border">
+
+                    Limpiar Formulario
+
+                </button>
+
+                <a href="/dashboard/admin"
+                   class="btn btn-light border">
+
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="border mt-3 p-2 text-center small">
+
+    Al guardar, la agencia quedará disponible inmediatamente para la vinculación de empleados, cuentas y créditos.
+
+</div>
+
+<hr class="my-4">
+
+<h4>
+
+    Agencias Registradas
+
+</h4>
+
+<div class="table-responsive">
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Municipio</th>
+                <th>Teléfono</th>
+                <th>Fecha Apertura</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for agencia in agencias %}
+
+            <tr>
+
+                <td>{{ agencia.codigo_agencia }}</td>
+                <td>{{ agencia.nombre_agencia }}</td>
+                <td>{{ agencia.municipio }}</td>
+                <td>{{ agencia.telefono }}</td>
+                <td>{{ agencia.fecha_apertura }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
