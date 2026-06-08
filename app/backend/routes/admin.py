@@ -3,6 +3,86 @@ from db import get_connection
 
 admin_bp = Blueprint('admin', __name__)
 
+## Consultar bitácora de auditoría
+@admin_bp.route('/auditoria')
+def auditoria():
+
+    conn = None
+    cur = None
+
+    try:
+
+        usuario = request.args.get('usuario')
+        fecha_desde = request.args.get('fecha_desde')
+        fecha_hasta = request.args.get('fecha_hasta')
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        consulta = """
+            SELECT
+                id_registro,
+                fecha_hora,
+                usuario,
+                operacion
+            FROM bitacora
+            WHERE 1 = 1
+        """
+
+        parametros = []
+
+        if usuario:
+            consulta += """
+                AND usuario = %s
+            """
+            parametros.append(usuario)
+
+        if fecha_desde:
+            consulta += """
+                AND fecha_hora >= %s
+            """
+            parametros.append(fecha_desde)
+
+        if fecha_hasta:
+            consulta += """
+                AND fecha_hora <= %s
+            """
+            parametros.append(fecha_hasta)
+
+        consulta += """
+            ORDER BY fecha_hora DESC
+        """
+
+        cur.execute(
+            consulta,
+            tuple(parametros)
+        )
+
+        registros = cur.fetchall()
+
+        return render_template(
+            'auditoria.html',
+            registros=registros
+        )
+
+    except Exception as e:
+
+        flash(
+            f'Error al consultar auditoría: {e}'
+        )
+
+        return redirect(
+            url_for('auth.dashboard_admin')
+        )
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
 ## Listamos las agencias 
 @admin_bp.route('/agencias')
 def agencias():

@@ -9,7 +9,8 @@ asociado_bp = Blueprint(
     __name__
 )
 
-CEDULA_PRUEBA = '12345678' ## Se usa porque aun no hay un sistema de autenticación implementado
+# Temporal mientras se implementa autenticación real
+CEDULA_PRUEBA = '12345678' 
 
 ## Ruta para mostrar los datos del asociado
 @asociado_bp.route('/mis_datos')
@@ -168,6 +169,10 @@ def mis_creditos():
             'mis_creditos.html',
             creditos=creditos
         )
+
+    except Exception as e:
+
+        return str(e)
 
     finally:
 
@@ -355,6 +360,10 @@ def exportar_extracto_csv():
                 'attachment; filename=extracto.csv'
             }
         )
+    
+    except Exception as e:
+
+        return str(e)
 
     finally:
 
