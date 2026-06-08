@@ -1,8 +1,10 @@
 from flask import Flask, redirect, url_for
 from config import Config
 from routes.auth import auth_bp
-from routes.admin import admin_bp
 from db import test_tables
+from routes.admin import admin_bp
+from routes.asesor import asesor_bp
+from routes.asociado import asociado_bp
 
 app = Flask(
     __name__,
@@ -15,6 +17,9 @@ app.config['DEBUG'] = Config.DEBUG
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(asesor_bp)
+app.register_blueprint(asociado_bp)
+
 @app.route('/')
 def inicio():
     return redirect(url_for('auth.login'))
