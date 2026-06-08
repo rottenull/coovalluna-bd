@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Auditoría del Sistema{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">
+    Bitácora de Accesos y Operaciones Críticas
+</h3>
+
+<div class="alert alert-warning small">
+    Aviso de Privacidad: Esta información es de carácter confidencial y solo es
+    accesible para el perfil Administrador. Los perfiles Asesor y Asociado tienen
+    restringido el acceso a este módulo.
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-danger">
+    {% for msg in messages %}{{ msg }}{% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- FILTROS -->
+
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        <form method="GET" action="/auditoria">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-3">
+                    <label class="form-label">Usuario</label>
+                    <input type="text"
+                           name="usuario"
+                           class="form-control"
+                           placeholder="Nombre de usuario"
+                           value="{{ request.args.get('usuario', '') }}">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Fecha (Desde)</label>
+                    <input type="date"
+                           name="fecha_desde"
+                           class="form-control"
+                           value="{{ request.args.get('fecha_desde', '') }}">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Fecha (Hasta)</label>
+                    <input type="date"
+                           name="fecha_hasta"
+                           class="form-control"
+                           value="{{ request.args.get('fecha_hasta', '') }}">
+                </div>
+
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-secondary">
+                        Filtrar Bitácora
+                    </button>
+                    <a href="/auditoria" class="btn btn-light border">
+                        Limpiar
+                    </a>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- TABLA DE REGISTROS -->
+
+<div class="card">
+
+    <div class="card-body">
+
+        <div>
+
+            <table class="table table-bordered table-hover w-100">
+
+                <colgroup>
+                    <col style="width: 8%">
+                    <col style="width: 18%">
+                    <col style="width: 15%">
+                    <col>
+                </colgroup>
+
+                <thead>
+                    <tr>
+                        <th>ID Registro</th>
+                        <th>Fecha y Hora</th>
+                        <th>Usuario</th>
+                        <th>Operación Realizada</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% if registros %}
+
+                        {% for reg in registros %}
+                        <tr>
+                            <td>{{ reg[0] }}</td>
+                            <td>{{ reg[1] }}</td>
+                            <td>{{ reg[2] }}</td>
+                            <td>{{ reg[3] }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">
+                                No se encontraron registros con los filtros aplicados.
+                            </td>
+                        </tr>
+
+                    {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+
+            <a href="/auditoria?{{ request.query_string.decode() }}&exportar=csv"
+               class="btn btn-light border">
+                Exportar Log (CSV)
+            </a>
+
+            <button onclick="window.print()"
+                    class="btn btn-light border">
+                Imprimir Reporte de Seguridad
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="border mt-4 p-2 small text-muted">
+    Los registros se muestran en orden cronológico descendente (más recientes primero).
+    Solo el Administrador del Sistema puede consultar esta información.
+</div>
+
+{% endblock %}

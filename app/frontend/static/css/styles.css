@@ -13,7 +13,7 @@ body {
     padding: 20px;
 }
 
-.card {
+.contenedor .card {
     width: 100%;
     max-width: 420px;
     background-color: white;

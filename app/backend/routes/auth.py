@@ -69,14 +69,14 @@ def login():
 @auth_bp.route('/dashboard/admin')
 def dashboard_admin():
 
-    return '<h1>dashboard administrador</h1>'
+    return render_template('dashboard_admin.html')
 
 @auth_bp.route('/dashboard/asesor')
 def dashboard_asesor():
 
-    return '<h1>dashboard asesor</h1>'
+    return render_template('dashboard_asesor.html')
 
 @auth_bp.route('/dashboard/asociado')
 def dashboard_asociado():
 
-    return '<h1>dashboard asociado</h1>'
+    return render_template('dashboard_asociado.html')
