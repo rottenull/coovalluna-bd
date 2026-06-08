@@ -1,10 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}Panel Administrador{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Panel de Administración
+</h2>
+
+<div class="alert alert-secondary">
+    Bienvenido al sistema COOVALLUNA. Seleccione una opción para comenzar.
+</div>
+
+<div class="row">
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Agencias</h5>
+                <a href="/agencias" class="btn btn-secondary">
+                    Gestionar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Empleados</h5>
+                <a href="/empleados" class="btn btn-secondary">
+                    Gestionar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Asociados</h5>
+                <a href="/asociados" class="btn btn-secondary">
+                    Gestionar
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Reportes</h5>
+                <a href="/reportes" class="btn btn-secondary">
+                    Ver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Usuarios y Roles</h5>
+                <button class="btn btn-secondary">
+                    Gestionar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Auditoría</h5>
+                <button class="btn btn-secondary">
+                    Consultar
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
