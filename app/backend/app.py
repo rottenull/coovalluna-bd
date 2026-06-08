@@ -2,6 +2,8 @@ from flask import Flask, redirect, url_for
 from config import Config
 from routes.auth import auth_bp
 from db import test_tables
+from routes.admin import admin_bp
+from routes.asesor import asesor_bp
 
 app = Flask(
     __name__,
@@ -13,6 +15,8 @@ app.config['SECRET_KEY'] = Config.SECRET_KEY
 app.config['DEBUG'] = Config.DEBUG
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(admin_bp)
+app.register_blueprint(asesor_bp)
 
 @app.route('/')
 def inicio():
