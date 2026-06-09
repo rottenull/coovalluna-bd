@@ -1,10 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal del Asociado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand fw-bold">Portal del Asociado</span>
+            <div>
+                <span class="text-white me-3">
+                    Usuario: {{ session.usuario if session.usuario else "Asociado" }}
+                </span>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="p-4 bg-white rounded shadow-sm mb-4">
+            <h2>Bienvenido al Portal del Asociado</h2>
+            <p class="text-secondary">
+                Desde aquí puedes consultar tu información personal, tus cuentas, tus movimientos y tus créditos.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5>Mis Datos Personales</h5>
+                        <p class="text-muted small">Consulta tu información registrada en la cooperativa.</p>
+                        <a href="{{ url_for('asociado.mis_datos') }}" class="btn btn-primary btn-sm">Ver datos</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5>Mis Cuentas de Ahorro</h5>
+                        <p class="text-muted small">Consulta tus cuentas y el saldo calculado dinámicamente.</p>
+                        <a href="{{ url_for('asociado.mis_cuentas') }}" class="btn btn-success btn-sm">Ver cuentas</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5>Historial de Movimientos</h5>
+                        <p class="text-muted small">Consulta tu extracto con filtros por fecha y canal.</p>
+                        <a href="{{ url_for('asociado.extracto') }}" class="btn btn-warning btn-sm text-dark fw-bold">Ver extracto</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5>Mis Créditos</h5>
+                        <p class="text-muted small">Consulta el estado general de tus créditos activos.</p>
+                        <a href="{{ url_for('asociado.mis_creditos') }}" class="btn btn-info btn-sm text-white">Ver créditos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

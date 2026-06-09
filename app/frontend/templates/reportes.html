@@ -1,431 +1,596 @@
 {% extends "base.html" %}
 
-{% block title %}
-Reportes Operativos
-{% endblock %}
+{% block title %}Reportes Operativos{% endblock %}
 
 {% block content %}
 
-<h3 class="mb-4">
-    Reportes Operativos
-</h3>
+<h3 class="mb-4">Reportes Operativos</h3>
 
 <div class="alert alert-secondary">
-
     El usuario solo podrá consultar información correspondiente a la agencia que tenga asignada.
-
 </div>
-
-<!-- MENÚ DE REPORTES -->
 
 <div class="row mb-4">
-
-    <div class="col-md-3">
-
+    <div class="col-md-3 mb-3">
         <div class="card h-100">
-
             <div class="card-body text-center">
-
-                <h5>
-                    Listado de Asociados por Estado
-                </h5>
-
-                <button class="btn btn-secondary mt-3"
-                        onclick="mostrarReporte('reporteAsociados')">
-
+                <h5>Listado de Asociados por Estado</h5>
+                <button type="button" class="btn btn-secondary mt-3" onclick="mostrarReporte('reporteAsociados')">
                     Ver Reporte
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
-    <div class="col-md-3">
-
+    <div class="col-md-3 mb-3">
         <div class="card h-100">
-
             <div class="card-body text-center">
-
-                <h5>
-                    Extracto de Cuenta de Ahorro
-                </h5>
-
-                <button class="btn btn-secondary mt-3"
-                        onclick="mostrarReporte('reporteExtracto')">
-
+                <h5>Extracto de Cuenta de Ahorro</h5>
+                <button type="button" class="btn btn-secondary mt-3" onclick="mostrarReporte('reporteExtracto')">
                     Ver Reporte
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
-    <div class="col-md-3">
-
+    <div class="col-md-3 mb-3">
         <div class="card h-100">
-
             <div class="card-body text-center">
-
-                <h5>
-                    Historial de Pagos de Crédito
-                </h5>
-
-                <button class="btn btn-secondary mt-3"
-                        onclick="mostrarReporte('reportePagos')">
-
+                <h5>Historial de Pagos de Crédito</h5>
+                <button type="button" class="btn btn-secondary mt-3" onclick="mostrarReporte('reportePagos')">
                     Ver Reporte
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
-    <div class="col-md-3">
-
+    <div class="col-md-3 mb-3">
         <div class="card h-100">
-
             <div class="card-body text-center">
-
-                <h5>
-                    Asociados en Mora
-                </h5>
-
-                <button class="btn btn-secondary mt-3"
-                        onclick="mostrarReporte('reporteMora')">
-
+                <h5>Asociados en Mora</h5>
+                <button type="button" class="btn btn-secondary mt-3" onclick="mostrarReporte('reporteMora')">
                     Ver Reporte
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5>Estado de Cartera por Línea y Estado</h5>
+                <button type="button" class="btn btn-secondary mt-3" onclick="mostrarReporte('reporteCartera')">
+                    Ver Reporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5>Productividad de Asesores por Agencia</h5>
+                <button type="button" class="btn btn-secondary mt-3" onclick="mostrarReporte('reporteProductividad')">
+                    Ver Reporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5>Asociados con Codeudora Activa</h5>
+                <button type="button" class="btn btn-secondary mt-3" onclick="mostrarReporte('reporteCodeudora')">
+                    Ver Reporte
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- REPORTE ASOCIADOS -->
-
-<div id="reporteAsociados"
-     class="reporte-container">
-
+<div id="reporteAsociados" class="reporte-container {% if reporte_activo != 'asociados' %}d-none{% endif %}">
     <div class="card">
-
         <div class="card-header">
-
-            <strong>
-                Listado de Asociados por Estado
-            </strong>
-
+            <strong>Listado de Asociados por Estado</strong>
         </div>
-
         <div class="card-body">
-
             <form method="GET">
+                <input type="hidden" name="reporte" value="asociados">
 
                 <div class="row">
-
                     <div class="col-md-4">
-
-                        <label class="form-label">
-                            Estado
-                        </label>
-
-                        <select class="form-select"
-                                name="estado">
-
-                            <option value="">
-                                Todos
-                            </option>
-
-                            <option value="activo">
-                                Activo
-                            </option>
-
-                            <option value="suspendido">
-                                Suspendido
-                            </option>
-
-                            <option value="retirado">
-                                Retirado
-                            </option>
-
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="estado">
+                            <option value="">Todos</option>
+                            <option value="activo">Activo</option>
+                            <option value="suspendido">Suspendido</option>
+                            <option value="retirado">Retirado</option>
                         </select>
-
                     </div>
 
                     <div class="col-md-4">
-
-                        <label class="form-label">
-                            Tipo Asociado
-                        </label>
-
-                        <select class="form-select"
-                                name="tipo">
-
-                            <option value="">
-                                Todos
-                            </option>
-
-                            <option value="normal">
-                                Asociado
-                            </option>
-
-                            <option value="fundador">
-                                Fundador
-                            </option>
-
+                        <label class="form-label">Tipo Asociado</label>
+                        <select class="form-select" name="tipo">
+                            <option value="">Todos</option>
+                            <option value="normal">Asociado</option>
+                            <option value="fundador">Fundador</option>
                         </select>
-
                     </div>
-
                 </div>
 
                 <div class="mt-3">
-
-                    <button class="btn btn-secondary">
-
-                        Consultar
-
-                    </button>
-
-                    <button type="reset"
-                            class="btn btn-light border">
-
+                    <button type="submit" class="btn btn-secondary">Consultar</button>
+                    <a href="{{ url_for('reportes.menu_reportes', reporte='asociados') }}" class="btn btn-light border">
                         Limpiar Filtros
-
-                    </button>
-
+                    </a>
                 </div>
-
             </form>
 
             <hr>
 
             <div class="table-responsive">
-
                 <table class="table table-bordered">
-
                     <thead>
-
                         <tr>
-
                             <th>Cédula</th>
                             <th>Nombres y Apellidos</th>
                             <th>Tipo Asociado</th>
                             <th>Fecha Afiliación</th>
                             <th>Productos Activos</th>
                             <th>Estado</th>
-
                         </tr>
-
                     </thead>
-
                     <tbody>
-
                         {% for asociado in asociados_reporte %}
-
                         <tr>
-
                             <td>{{ asociado.cedula }}</td>
-
-                            <td>
-                                {{ asociado.nombre }}
-                            </td>
-
-                            <td>
-                                {{ asociado.tipo }}
-                            </td>
-
-                            <td>
-                                {{ asociado.fecha_afiliacion }}
-                            </td>
-
-                            <td>
-                                {{ asociado.productos }}
-                            </td>
-
-                            <td>
-                                {{ asociado.estado }}
-                            </td>
-
+                            <td>{{ asociado.nombre }}</td>
+                            <td>{{ asociado.tipo }}</td>
+                            <td>{{ asociado.fecha_afiliacion }}</td>
+                            <td>{{ asociado.productos }}</td>
+                            <td>{{ asociado.estado }}</td>
                         </tr>
-
                         {% endfor %}
-
                     </tbody>
-
                 </table>
-
             </div>
-
-            <div class="mt-3">
-
-                <button class="btn btn-secondary">
-
-                    Descargar PDF
-
-                </button>
-
-                <button class="btn btn-secondary">
-
-                    Descargar CSV
-
-                </button>
-
-            </div>
-
         </div>
-
     </div>
-
 </div>
 
-<!-- REPORTE EXTRACTOS -->
-
-<div id="reporteExtracto"
-     class="reporte-container d-none">
-
+<div id="reporteExtracto" class="reporte-container {% if reporte_activo != 'extracto' %}d-none{% endif %}">
     <div class="card">
-
         <div class="card-header">
-
-            <strong>
-                Extracto Cuenta de Ahorro
-            </strong>
-
+            <strong>Extracto Cuenta de Ahorro</strong>
         </div>
-
         <div class="card-body">
+            <form method="GET">
+                <input type="hidden" name="reporte" value="extracto">
 
-            <div class="row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Número de Cuenta</label>
+                        <input type="text" name="numero_cuenta" class="form-control">
+                    </div>
 
-                <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Inicio</label>
+                        <input type="date" name="fecha_inicio" class="form-control">
+                    </div>
 
-                    <label>
-                        Número de Cuenta
-                    </label>
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Fin</label>
+                        <input type="date" name="fecha_fin" class="form-control">
+                    </div>
 
-                    <input type="text"
-                           class="form-control">
+                    <div class="col-md-3 mt-3">
+                        <label class="form-label">Canal</label>
+                        <select name="canal" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="presencial">Presencial</option>
+                            <option value="app">App</option>
+                            <option value="cajero">Cajero</option>
+                        </select>
+                    </div>
 
+                    <div class="col-md-3 mt-3">
+                        <label class="form-label">Tipo Movimiento</label>
+                        <select name="tipo_movimiento" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="deposito">Depósito</option>
+                            <option value="retiro">Retiro</option>
+                            <option value="transferencia_entrante">Transferencia Entrante</option>
+                            <option value="transferencia_saliente">Transferencia Saliente</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="col-md-3">
-
-                    <label>
-                        Fecha Inicio
-                    </label>
-
-                    <input type="date"
-                           class="form-control">
-
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-secondary">Generar Extracto</button>
+                    <a href="{{ url_for('reportes.menu_reportes', reporte='extracto') }}" class="btn btn-light border">
+                        Limpiar Filtros
+                    </a>
                 </div>
+            </form>
 
-                <div class="col-md-3">
+            <hr>
 
-                    <label>
-                        Fecha Fin
-                    </label>
-
-                    <input type="date"
-                           class="form-control">
-
-                </div>
-
+            {% if extracto_reporte %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID Transacción</th>
+                            <th>Fecha Hora</th>
+                            <th>Tipo</th>
+                            <th>Valor</th>
+                            <th>Canal</th>
+                            <th>Número Cuenta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mov in extracto_reporte %}
+                        <tr>
+                            <td>{{ mov.id_transaccion }}</td>
+                            <td>{{ mov.fecha_hora }}</td>
+                            <td>{{ mov.tipo }}</td>
+                            <td>{{ mov.valor }}</td>
+                            <td>{{ mov.canal }}</td>
+                            <td>{{ mov.numero_cuenta }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
-            <button class="btn btn-secondary mt-3">
-
-                Generar Extracto
-
-            </button>
-
+            <div class="alert alert-info mt-3">
+                <strong>Saldo calculado:</strong> {{ saldo_extracto }}
+            </div>
+            {% endif %}
         </div>
-
     </div>
-
 </div>
 
-<!-- REPORTE PAGOS -->
-
-<div id="reportePagos"
-     class="reporte-container d-none">
-
+<div id="reportePagos" class="reporte-container {% if reporte_activo != 'pagos' %}d-none{% endif %}">
     <div class="card">
-
         <div class="card-header">
-
-            <strong>
-                Historial de Pagos de Crédito
-            </strong>
-
+            <strong>Historial de Pagos de Crédito</strong>
         </div>
-
         <div class="card-body">
+            <form method="GET">
+                <input type="hidden" name="reporte" value="pagos">
 
-            <label>
-                Número Crédito
-            </label>
+                <label class="form-label">Número Crédito</label>
+                <input type="text" name="numero_credito" class="form-control">
 
-            <input type="text"
-                   class="form-control">
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-secondary">Consultar</button>
+                    <a href="{{ url_for('reportes.menu_reportes', reporte='pagos') }}" class="btn btn-light border">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
 
-            <button class="btn btn-secondary mt-3">
+            <hr>
 
-                Consultar
-
-            </button>
-
+            {% if pagos_reporte %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Número Crédito</th>
+                            <th>Número Cuota</th>
+                            <th>Fecha Pago</th>
+                            <th>Valor Pagado</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pago in pagos_reporte %}
+                        <tr>
+                            <td>{{ pago.numero_radicado }}</td>
+                            <td>{{ pago.numero_cuota }}</td>
+                            <td>{{ pago.fecha_pago }}</td>
+                            <td>{{ pago.valor_pagado }}</td>
+                            <td>{{ pago.estado }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
-
     </div>
-
 </div>
 
-<!-- REPORTE MORA -->
-
-<div id="reporteMora"
-     class="reporte-container d-none">
-
+<div id="reporteMora" class="reporte-container {% if reporte_activo != 'mora' %}d-none{% endif %}">
     <div class="card">
-
         <div class="card-header">
-
-            <strong>
-                Asociados en Mora
-            </strong>
-
+            <strong>Asociados en Mora</strong>
         </div>
-
         <div class="card-body">
+            <form method="GET">
+                <input type="hidden" name="reporte" value="mora">
 
-            <button class="btn btn-secondary">
+                <button type="submit" class="btn btn-secondary">Consultar</button>
+                <a href="{{ url_for('reportes.menu_reportes', reporte='mora') }}" class="btn btn-light border">
+                    Limpiar
+                </a>
+            </form>
 
-                Consultar
+            <hr>
 
-            </button>
-
+            {% if mora_reporte %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Asociado</th>
+                            <th>Número Crédito</th>
+                            <th>Número Cuota</th>
+                            <th>Días Mora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mora in mora_reporte %}
+                        <tr>
+                            <td>{{ mora.cedula }}</td>
+                            <td>{{ mora.nombre }}</td>
+                            <td>{{ mora.numero_radicado }}</td>
+                            <td>{{ mora.numero_cuota }}</td>
+                            <td>{{ mora.dias_mora }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
-
     </div>
+</div>
 
+<div id="reporteCartera" class="reporte-container {% if reporte_activo != 'cartera' %}d-none{% endif %}">
+    <div class="card">
+        <div class="card-header">
+            <strong>Estado de Cartera por Línea y Estado</strong>
+        </div>
+        <div class="card-body">
+            <form method="GET">
+                <input type="hidden" name="reporte" value="cartera">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Código Agencia</label>
+                        <input type="text" name="agencia" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Aprobación Desde</label>
+                        <input type="date" name="fecha_inicio" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Aprobación Hasta</label>
+                        <input type="date" name="fecha_fin" class="form-control">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-secondary">Consultar</button>
+                    <a href="{{ url_for('reportes.menu_reportes', reporte='cartera') }}" class="btn btn-light border">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+
+            <hr>
+
+            {% if cartera_reporte %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Línea Crédito</th>
+                            <th>Estado</th>
+                            <th>Número Créditos</th>
+                            <th>Valor Total Aprobado</th>
+                            <th>% sobre Total Cartera</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cartera_reporte %}
+                        <tr>
+                            <td>{{ item.linea_credito }}</td>
+                            <td>{{ item.estado }}</td>
+                            <td>{{ item.numero_creditos }}</td>
+                            <td>{{ item.valor_total_aprobado }}</td>
+                            <td>{{ item.porcentaje_total }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="reporteProductividad" class="reporte-container {% if reporte_activo != 'productividad' %}d-none{% endif %}">
+    <div class="card">
+        <div class="card-header">
+            <strong>Productividad de Asesores por Agencia</strong>
+        </div>
+        <div class="card-body">
+            <form method="GET">
+                <input type="hidden" name="reporte" value="productividad">
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Código Agencia</label>
+                        <input type="text" name="agencia" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Desde</label>
+                        <input type="date" name="fecha_inicio" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Hasta</label>
+                        <input type="date" name="fecha_fin" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Ordenar Por</label>
+                        <select name="ordenar" class="form-select">
+                            <option value="asociados_atendidos">Asociados Atendidos</option>
+                            <option value="creditos_radicados">Créditos Radicados</option>
+                            <option value="valor_total_aprobado">Valor Total Aprobado</option>
+                            <option value="cuentas_abiertas">Cuentas Abiertas</option>
+                            <option value="asesor">Nombre Asesor</option>
+                            <option value="agencia">Agencia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-secondary">Consultar</button>
+                    <a href="{{ url_for('reportes.menu_reportes', reporte='productividad') }}" class="btn btn-light border">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+
+            <hr>
+
+            {% if productividad_reporte %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Cédula Empleado</th>
+                            <th>Asesor</th>
+                            <th>Agencia</th>
+                            <th>Asociados Atendidos</th>
+                            <th>Créditos Radicados</th>
+                            <th>Valor Total Aprobado</th>
+                            <th>Cuentas Abiertas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in productividad_reporte %}
+                        <tr>
+                            <td>{{ item.cedula_emple }}</td>
+                            <td>{{ item.asesor }}</td>
+                            <td>{{ item.agencia }}</td>
+                            <td>{{ item.asociados_atendidos }}</td>
+                            <td>{{ item.creditos_radicados }}</td>
+                            <td>{{ item.valor_total_aprobado }}</td>
+                            <td>{{ item.cuentas_abiertas }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="reporteCodeudora" class="reporte-container {% if reporte_activo != 'codeudora' %}d-none{% endif %}">
+    <div class="card">
+        <div class="card-header">
+            <strong>Asociados con Codeudora Activa</strong>
+        </div>
+        <div class="card-body">
+            <form method="GET">
+                <input type="hidden" name="reporte" value="codeudora">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Estado Crédito</label>
+                        <select name="estado_credito" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="en_estudio">En estudio</option>
+                            <option value="aprobado">Aprobado</option>
+                            <option value="desembolsado">Desembolsado</option>
+                            <option value="al_dia">Al día</option>
+                            <option value="en_mora">En mora</option>
+                            <option value="cancelado">Cancelado</option>
+                            <option value="castigado">Castigado</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Número Crédito</label>
+                        <input type="text" name="numero_credito" class="form-control">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-secondary">Consultar</button>
+                    <a href="{{ url_for('reportes.menu_reportes', reporte='codeudora') }}" class="btn btn-light border">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+
+            <hr>
+
+            {% if codeudora_reporte %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Número Crédito</th>
+                            <th>Cédula Titular</th>
+                            <th>Titular</th>
+                            <th>Cédula Codeudor</th>
+                            <th>Codeudor</th>
+                            <th>Valor Crédito</th>
+                            <th>Fecha Firma Pagaré</th>
+                            <th>Estado Crédito</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in codeudora_reporte %}
+                        <tr>
+                            <td>{{ item.numero_radicado }}</td>
+                            <td>{{ item.cedula_titular }}</td>
+                            <td>{{ item.titular }}</td>
+                            <td>{{ item.cedula_codeudor }}</td>
+                            <td>{{ item.codeudor }}</td>
+                            <td>{{ item.valor_aprobado }}</td>
+                            <td>{{ item.fecha_firma }}</td>
+                            <td>{{ item.estado }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 <div class="border mt-4 p-2 small">
-
     Los reportes consolidados y los reportes de otras agencias son accesibles únicamente para usuarios con perfil administrador.
-
 </div>
+
+<script>
+function mostrarReporte(idReporte) {
+    const reportes = document.querySelectorAll('.reporte-container');
+    reportes.forEach(function(reporte) {
+        reporte.classList.add('d-none');
+    });
+
+    const activo = document.getElementById(idReporte);
+    if (activo) {
+        activo.classList.remove('d-none');
+    }
+}
+</script>
 
 {% endblock %}
