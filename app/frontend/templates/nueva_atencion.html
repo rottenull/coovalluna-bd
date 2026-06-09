@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nueva Atención
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-primary text-white">
+
+                <h4 class="mb-0">
+
+                    Registrar Nueva Atención
+
+                </h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST"
+                      action="{{ url_for('asesor.crear_atencion') }}">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Empleado (*)
+
+                        </label>
+
+                        <select name="cedula_empleado"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+
+                                Seleccione un empleado
+
+                            </option>
+
+                            {% for empleado in empleados %}
+
+                            <option value="{{ empleado[0] }}">
+
+                                {{ empleado[0] }} -
+                                {{ empleado[1] }}
+                                {{ empleado[2] }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Asociado (*)
+
+                        </label>
+
+                        <select name="cedula_asociado"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+
+                                Seleccione un asociado
+
+                            </option>
+
+                            {% for asociado in asociados %}
+
+                            <option value="{{ asociado[0] }}">
+
+                                {{ asociado[0] }} -
+                                {{ asociado[1] }}
+                                {{ asociado[2] }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+
+                            Fecha de Atención (*)
+
+                        </label>
+
+                        <input type="date"
+                               name="fecha_atencion"
+                               class="form-control"
+                               required>
+
+                    </div>
+
+                    <div class="d-flex gap-2">
+
+                        <button type="submit"
+                                class="btn btn-success">
+
+                            Guardar Atención
+
+                        </button>
+
+                        <a href="{{ url_for('asesor.atenciones') }}"
+                           class="btn btn-secondary">
+
+                            Cancelar
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

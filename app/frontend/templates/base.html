@@ -30,16 +30,16 @@
 
         <div class="d-flex justify-content-between align-items-center p-3">
 
-            <strong>
+            <strong class="fs-4">
                 COOVALLUNA
             </strong>
 
             <div>
 
                 Usuario:
-                {{ session.usuario if session.usuario else "Administrador del Sistema" }}
+                {{ session.get('usuario', 'Invitado') }}
 
-                <a href="/logout"
+                <a href="{{ url_for('auth.logout') }}"
                    class="btn btn-outline-secondary btn-sm ms-3">
 
                     Cerrar sesión
@@ -52,11 +52,9 @@
 
     </div>
 
-    <!-- CONTENIDO -->
-
     <div class="row g-0">
 
-        <!-- SIDEBAR -->
+        <!-- MENÚ LATERAL -->
 
         <div class="col-md-2 border-end bg-light min-vh-100">
 
@@ -64,47 +62,120 @@
 
                 <ul class="nav flex-column">
 
-                    <li class="nav-item mb-2">
-                        <a href="/agencias"
-                           class="nav-link text-dark">
-                            Agencias
-                        </a>
-                    </li>
+                    {% if session.get('rol') == 'admin' %}
 
-                    <li class="nav-item mb-2">
-                        <a href="/empleados"
-                           class="nav-link text-dark">
-                            Empleados
-                        </a>
-                    </li>
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('admin.agencias') }}"
+                               class="nav-link text-dark">
+                                Agencias
+                            </a>
+                        </li>
 
-                    <li class="nav-item mb-2">
-                        <a href="/asociados"
-                           class="nav-link text-dark">
-                            Asociados
-                        </a>
-                    </li>
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('admin.empleados') }}"
+                               class="nav-link text-dark">
+                                Empleados
+                            </a>
+                        </li>
 
-                    <li class="nav-item mb-2">
-                        <a href="/reportes"
-                           class="nav-link text-dark">
-                            Reportes
-                        </a>
-                    </li>
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('admin.usuarios') }}"
+                               class="nav-link text-dark">
+                                Usuarios
+                            </a>
+                        </li>
 
-                    <li class="nav-item mb-2">
-                        <a href="/usuarios"
-                           class="nav-link text-dark">
-                            Usuarios y Roles
-                        </a>
-                    </li>
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('admin.auditoria') }}"
+                               class="nav-link text-dark">
+                                Auditoría
+                            </a>
+                        </li>
 
-                    <li class="nav-item mb-2">
-                        <a href="/auditoria"
-                           class="nav-link text-dark">
-                            Auditoría
-                        </a>
-                    </li>
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('reportes.menu_reportes') }}"
+                               class="nav-link text-dark">
+                                Reportes
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                    {% if session.get('rol') in ['admin', 'asesor'] %}
+
+                        <hr>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.asociados') }}"
+                               class="nav-link text-dark">
+                                Asociados
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.fundadores') }}"
+                               class="nav-link text-dark">
+                                Fundadores
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.atenciones') }}"
+                               class="nav-link text-dark">
+                                Atenciones
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.beneficiarios') }}"
+                               class="nav-link text-dark">
+                                Beneficiarios
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.cuentas') }}"
+                               class="nav-link text-dark">
+                                Cuentas
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.movimientos') }}"
+                               class="nav-link text-dark">
+                                Movimientos
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.creditos') }}"
+                               class="nav-link text-dark">
+                                Créditos
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.codeudores') }}"
+                               class="nav-link text-dark">
+                                Codeudores
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('asesor.pagos') }}"
+                               class="nav-link text-dark">
+                                Pagos
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a href="{{ url_for('reportes.menu_reportes') }}"
+                               class="nav-link text-dark">
+                                Reportes
+                            </a>
+                        </li>
+
+                    {% endif %}
 
                 </ul>
 
@@ -117,6 +188,30 @@
         <div class="col-md-10">
 
             <div class="p-4">
+
+                <!-- MENSAJES FLASH -->
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+
+                        {% for message in messages %}
+
+                            <div class="alert alert-info alert-dismissible fade show"
+                                 role="alert">
+
+                                {{ message }}
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert">
+                                </button>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+                {% endwith %}
 
                 {% block content %}
                 {% endblock %}
