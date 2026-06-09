@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}
+Cargos
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h3>
+        Gestión de Cargos
+    </h3>
+
+    <a href="{{ url_for('admin.nuevo_cargo') }}"
+       class="btn btn-primary">
+
+        Nuevo Cargo
+
+    </a>
+
+</div>
+
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        <p class="mb-0">
+            Desde este módulo se administran los cargos existentes dentro de la cooperativa.
+            Los cargos son utilizados para la asignación de funciones y estructura organizacional de los empleados.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="card-header">
+
+        <strong>
+            Cargos Registrados
+        </strong>
+
+    </div>
+
+    <div class="card-body">
+
+        {% if cargos %}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Nombre del Cargo</th>
+                        <th>Turno</th>
+                        <th>Zona</th>
+                        <th>Descripción</th>
+                        <th width="120">Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for cargo in cargos %}
+
+                    <tr>
+
+                        <td>{{ cargo[0] }}</td>
+                        <td>{{ cargo[1] }}</td>
+                        <td>{{ cargo[2] }}</td>
+                        <td>{{ cargo[3] }}</td>
+                        <td>{{ cargo[4] }}</td>
+
+                        <td>
+
+                            <a href="{{ url_for('admin.editar_cargo', id_cargo=cargo[0]) }}"
+                               class="btn btn-warning btn-sm">
+
+                                Editar
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-info">
+
+            No existen cargos registrados.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mis Beneficiarios
+{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">
+    Mis Beneficiarios
+</h3>
+
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        <p class="mb-0">
+            Aquí puedes consultar los beneficiarios registrados para tus productos dentro de la cooperativa.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-light">
+
+            <tr>
+                <th>Documento</th>
+                <th>Nombre</th>
+                <th>Parentesco</th>
+                <th>Porcentaje</th>
+                <th>Teléfono</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% if beneficiarios %}
+
+                {% for beneficiario in beneficiarios %}
+
+                <tr>
+
+                    <td>{{ beneficiario[0] }}</td>
+                    <td>{{ beneficiario[1] }}</td>
+                    <td>{{ beneficiario[2] }}</td>
+                    <td>{{ beneficiario[3] }}%</td>
+                    <td>{{ beneficiario[4] }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center text-muted">
+
+                        No tienes beneficiarios registrados.
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="mt-3">
+
+    <a href="{{ url_for('auth.dashboard_asociado') }}"
+       class="btn btn-secondary">
+
+        Volver al Portal
+
+    </a>
+
+</div>
+
+{% endblock %}
