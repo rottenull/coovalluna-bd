@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nuevo Cargo
+{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">
+    Registrar Nuevo Cargo
+</h3>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <p class="border p-2">
+            Complete la información del nuevo cargo que será utilizado en la estructura organizacional de la cooperativa.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('admin.crear_cargo') }}">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    ID del Cargo (*)
+                </label>
+
+                <input type="number"
+                       name="id_cargo"
+                       class="form-control"
+                       required>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Nombre del Cargo (*)
+                </label>
+
+                <input type="text"
+                       name="nombre_cargo"
+                       class="form-control"
+                       required>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Turno
+                </label>
+
+                <input type="text"
+                       name="turno"
+                       class="form-control"
+                       placeholder="Ej: Mañana, Tarde, Nocturno">
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Zona
+                </label>
+
+                <input type="text"
+                       name="zona"
+                       class="form-control"
+                       placeholder="Ej: Urbana, Rural, Regional">
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    Descripción
+                </label>
+
+                <textarea name="descripcion"
+                          class="form-control"
+                          rows="3"></textarea>
+
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    Guardar Cargo
+
+                </button>
+
+                <button type="reset"
+                        class="btn btn-secondary">
+
+                    Limpiar
+
+                </button>
+
+                <a href="{{ url_for('admin.cargos') }}"
+                   class="btn btn-outline-dark">
+
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="border mt-3 p-2 text-center small">
+
+    Los cargos registrados estarán disponibles inmediatamente para la asignación de empleados.
+
+</div>
+
+{% endblock %}

@@ -184,6 +184,53 @@ def mis_creditos():
         if conn:
             conn.close()
 
+## Rutas para asociados: beneficiarios, extracto, exportar extracto CSV
+@asociado_bp.route('/mis_beneficiarios')
+def mis_beneficiarios():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
+
+    conn = None
+    cur = None
+
+    try:
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                documento,
+                nombre,
+                parentesco,
+                porcentaje,
+                telefono
+            FROM beneficiario
+            WHERE cedula_asociado = %s
+            ORDER BY nombre
+        """, (cedula,))
+
+        beneficiarios = cur.fetchall()
+
+        return render_template(
+            'mis_beneficiarios.html',
+            beneficiarios=beneficiarios
+        )
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
 
 @asociado_bp.route('/extracto')
 def extracto():

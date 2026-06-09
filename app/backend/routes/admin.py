@@ -1110,4 +1110,247 @@ def restablecer_contrasena(id_usuario):
 
     return redirect(url_for('admin.editar_usuario', id_usuario=id_usuario))
 
-## 11
+## Listamos los cargos
+@admin_bp.route('/cargos')
+def cargos():
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                id_cargo,
+                nombre_cargo,
+                turno,
+                zona,
+                descripcion
+            FROM cargo
+            ORDER BY nombre_cargo
+        """)
+
+        cargos = cur.fetchall()
+
+        return render_template(
+            'cargos.html',
+            cargos=cargos
+        )
+
+    except Exception as e:
+
+        flash(f'Error al consultar cargos: {e}')
+
+        return render_template(
+            'cargos.html',
+            cargos=[]
+        )
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+## Formulario nuevo cargo
+@admin_bp.route('/cargos/nuevo')
+def nuevo_cargo():
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    return render_template(
+        'nuevo_cargo.html'
+    )
+
+## Creamos un cargo
+@admin_bp.route('/cargos/crear', methods=['POST'])
+def crear_cargo():
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+
+        id_cargo = request.form.get('id_cargo')
+        nombre_cargo = request.form.get('nombre_cargo')
+        turno = request.form.get('turno')
+        zona = request.form.get('zona')
+        descripcion = request.form.get('descripcion')
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO cargo(
+                id_cargo,
+                nombre_cargo,
+                turno,
+                zona,
+                descripcion
+            )
+            VALUES (%s,%s,%s,%s,%s)
+        """,
+        (
+            id_cargo,
+            nombre_cargo,
+            turno,
+            zona,
+            descripcion
+        ))
+
+        conn.commit()
+
+        flash('Cargo creado correctamente')
+
+    except Exception as e:
+
+        if conn:
+            conn.rollback()
+
+        flash(f'Error al crear cargo: {e}')
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+    return redirect(
+        url_for('admin.cargos')
+    )
+
+## Editar cargo
+@admin_bp.route('/cargos/editar/<int:id_cargo>')
+def editar_cargo(id_cargo):
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                id_cargo,
+                nombre_cargo,
+                turno,
+                zona,
+                descripcion
+            FROM cargo
+            WHERE id_cargo = %s
+        """, (id_cargo,))
+
+        cargo = cur.fetchone()
+
+        if not cargo:
+
+            flash('Cargo no encontrado')
+
+            return redirect(
+                url_for('admin.cargos')
+            )
+
+        return render_template(
+            'editar_cargo.html',
+            cargo=cargo
+        )
+
+    except Exception as e:
+
+        flash(f'Error al cargar cargo: {e}')
+
+        return redirect(
+            url_for('admin.cargos')
+        )
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+## Actualizamos un cargo
+@admin_bp.route('/cargos/actualizar/<int:id_cargo>', methods=['POST'])
+def actualizar_cargo(id_cargo):
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+
+        nombre_cargo = request.form.get('nombre_cargo')
+        turno = request.form.get('turno')
+        zona = request.form.get('zona')
+        descripcion = request.form.get('descripcion')
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            UPDATE cargo
+            SET
+                nombre_cargo = %s,
+                turno = %s,
+                zona = %s,
+                descripcion = %s
+            WHERE id_cargo = %s
+        """,
+        (
+            nombre_cargo,
+            turno,
+            zona,
+            descripcion,
+            id_cargo
+        ))
+
+        conn.commit()
+
+        flash('Cargo actualizado correctamente')
+
+    except Exception as e:
+
+        if conn:
+            conn.rollback()
+
+        flash(f'Error al actualizar cargo: {e}')
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+    return redirect(
+        url_for('admin.cargos')
+    )

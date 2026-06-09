@@ -15,60 +15,143 @@
                 <span class="text-white me-3">
                     Usuario: {{ session.usuario if session.usuario else "Asociado" }}
                 </span>
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">
+                    Cerrar Sesión
+                </a>
             </div>
         </div>
     </nav>
 
     <div class="container">
+
         <div class="p-4 bg-white rounded shadow-sm mb-4">
             <h2>Bienvenido al Portal del Asociado</h2>
+
             <p class="text-secondary">
-                Desde aquí puedes consultar tu información personal, tus cuentas, tus movimientos y tus créditos.
+                Desde aquí puedes consultar tu información personal,
+                tus cuentas, tus beneficiarios, tus movimientos y tus créditos.
             </p>
         </div>
 
         <div class="row g-4">
+
+            <!-- MIS DATOS -->
+
             <div class="col-md-6">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Mis Datos Personales</h5>
-                        <p class="text-muted small">Consulta tu información registrada en la cooperativa.</p>
-                        <a href="{{ url_for('asociado.mis_datos') }}" class="btn btn-primary btn-sm">Ver datos</a>
+
+                        <p class="text-muted small">
+                            Consulta tu información registrada en la cooperativa.
+                        </p>
+
+                        <a href="{{ url_for('asociado.mis_datos') }}"
+                           class="btn btn-primary btn-sm">
+
+                            Ver datos
+
+                        </a>
+
                     </div>
                 </div>
             </div>
 
+            <!-- MIS CUENTAS -->
+
             <div class="col-md-6">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Mis Cuentas de Ahorro</h5>
-                        <p class="text-muted small">Consulta tus cuentas y el saldo calculado dinámicamente.</p>
-                        <a href="{{ url_for('asociado.mis_cuentas') }}" class="btn btn-success btn-sm">Ver cuentas</a>
+
+                        <p class="text-muted small">
+                            Consulta tus cuentas y el saldo calculado dinámicamente.
+                        </p>
+
+                        <a href="{{ url_for('asociado.mis_cuentas') }}"
+                           class="btn btn-success btn-sm">
+
+                            Ver cuentas
+
+                        </a>
+
                     </div>
                 </div>
             </div>
 
+            <!-- EXTRACTO -->
+
             <div class="col-md-6">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Historial de Movimientos</h5>
-                        <p class="text-muted small">Consulta tu extracto con filtros por fecha y canal.</p>
-                        <a href="{{ url_for('asociado.extracto') }}" class="btn btn-warning btn-sm text-dark fw-bold">Ver extracto</a>
+
+                        <p class="text-muted small">
+                            Consulta tu extracto con filtros por fecha y canal.
+                        </p>
+
+                        <a href="{{ url_for('asociado.extracto') }}"
+                           class="btn btn-warning btn-sm text-dark fw-bold">
+
+                            Ver extracto
+
+                        </a>
+
                     </div>
                 </div>
             </div>
 
+            <!-- CREDITOS -->
+
             <div class="col-md-6">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Mis Créditos</h5>
-                        <p class="text-muted small">Consulta el estado general de tus créditos activos.</p>
-                        <a href="{{ url_for('asociado.mis_creditos') }}" class="btn btn-info btn-sm text-white">Ver créditos</a>
+
+                        <p class="text-muted small">
+                            Consulta el estado general de tus créditos activos.
+                        </p>
+
+                        <a href="{{ url_for('asociado.mis_creditos') }}"
+                           class="btn btn-info btn-sm text-white">
+
+                            Ver créditos
+
+                        </a>
+
                     </div>
                 </div>
             </div>
+
+            <!-- BENEFICIARIOS -->
+
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+
+                        <h5>Mis Beneficiarios</h5>
+
+                        <p class="text-muted small">
+                            Consulta los beneficiarios registrados y los porcentajes asignados.
+                        </p>
+
+                        <a href="{{ url_for('asociado.mis_beneficiarios') }}"
+                           class="btn btn-secondary btn-sm">
+
+                            Ver beneficiarios
+
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
 </body>

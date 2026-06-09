@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}
+Editar Cargo
+{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">
+    Editar Cargo
+</h3>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <p class="border p-2">
+            Modifique la información del cargo seleccionado.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('admin.actualizar_cargo', id_cargo=cargo[0]) }}">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    ID del Cargo
+                </label>
+
+                <input type="number"
+                       class="form-control"
+                       value="{{ cargo[0] }}"
+                       readonly>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Nombre del Cargo (*)
+                </label>
+
+                <input type="text"
+                       name="nombre_cargo"
+                       class="form-control"
+                       value="{{ cargo[1] }}"
+                       required>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Turno
+                </label>
+
+                <input type="text"
+                       name="turno"
+                       class="form-control"
+                       value="{{ cargo[2] if cargo[2] else '' }}">
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Zona
+                </label>
+
+                <input type="text"
+                       name="zona"
+                       class="form-control"
+                       value="{{ cargo[3] if cargo[3] else '' }}">
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    Descripción
+                </label>
+
+                <textarea name="descripcion"
+                          class="form-control"
+                          rows="3">{{ cargo[4] if cargo[4] else '' }}</textarea>
+
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+
+                <button type="submit"
+                        class="btn btn-warning">
+
+                    Actualizar Cargo
+
+                </button>
+
+                <a href="{{ url_for('admin.cargos') }}"
+                   class="btn btn-secondary">
+
+                    Volver
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="border mt-3 p-2 text-center small">
+
+    Los cambios realizados se reflejarán inmediatamente en los empleados asociados a este cargo.
+
+</div>
+
+{% endblock %}

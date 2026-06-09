@@ -39,8 +39,8 @@
     <div class="col-md-4 mb-3">
         <div class="card">
             <div class="card-body text-center">
-                <h5>Asociados</h5>
-                <a href="/asociados" class="btn btn-secondary">
+                <h5>Cargos</h5>
+                <a href="{{ url_for('admin.cargos') }}" class="btn btn-secondary">
                     Gestionar
                 </a>
             </div>
@@ -54,8 +54,19 @@
     <div class="col-md-4 mb-3">
         <div class="card">
             <div class="card-body text-center">
+                <h5>Asociados</h5>
+                <a href="{{ url_for('asesor.asociados') }}" class="btn btn-secondary">
+                    Gestionar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
                 <h5>Reportes</h5>
-                <a href="/reportes" class="btn btn-secondary">
+                <a href="{{ url_for('reportes.menu_reportes') }}" class="btn btn-secondary">
                     Ver
                 </a>
             </div>
@@ -72,6 +83,10 @@
             </div>
         </div>
     </div>
+
+</div>
+
+<div class="row">
 
     <div class="col-md-4 mb-3">
         <div class="card">
