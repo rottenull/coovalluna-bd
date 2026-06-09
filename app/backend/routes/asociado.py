@@ -3,6 +3,7 @@ import csv
 from io import StringIO
 from db import get_connection
 
+
 asociado_bp = Blueprint(
     'asociado',
     __name__
@@ -245,12 +246,26 @@ def extracto():
     cur = None
 
     try:
+
         fecha_inicio = request.args.get('fecha_inicio')
         fecha_fin = request.args.get('fecha_fin')
         canal = request.args.get('canal')
+        numero_cuenta = request.args.get('numero_cuenta')
+        tipo_movimiento = request.args.get('tipo_movimiento')
 
         conn = get_connection()
         cur = conn.cursor()
+
+        # Cuentas del asociado para el combo
+
+        cur.execute("""
+            SELECT numero_cuenta
+            FROM cuenta_ahorro
+            WHERE cedula_asociado = %s
+            ORDER BY numero_cuenta
+        """, (cedula,))
+
+        cuentas = cur.fetchall()
 
         consulta = """
             SELECT
@@ -286,6 +301,18 @@ def extracto():
             """
             parametros.append(canal)
 
+        if numero_cuenta:
+            consulta += """
+                AND m.numero_cuenta = %s
+            """
+            parametros.append(numero_cuenta)
+
+        if tipo_movimiento:
+            consulta += """
+                AND m.tipo = %s
+            """
+            parametros.append(tipo_movimiento)
+
         consulta += """
             ORDER BY m.fecha_hora DESC
         """
@@ -297,17 +324,40 @@ def extracto():
 
         movimientos = cur.fetchall()
 
+        saldo = 0
+
+        for movimiento in movimientos:
+
+            tipo = movimiento[2]
+            valor = float(movimiento[3])
+
+            if tipo in [
+                'depósito',
+                'transferencia entrante'
+            ]:
+                saldo += valor
+
+            elif tipo in [
+                'retiro',
+                'transferencia saliente'
+            ]:
+                saldo -= valor
+
         return render_template(
             'extracto.html',
-            movimientos=movimientos
+            movimientos=movimientos,
+            cuentas=cuentas,
+            saldo=saldo
         )
 
     except Exception as e:
         return str(e)
 
     finally:
+
         if cur:
             cur.close()
+
         if conn:
             conn.close()
 
@@ -325,9 +375,12 @@ def exportar_extracto_csv():
     cur = None
 
     try:
+
         fecha_inicio = request.args.get('fecha_inicio')
         fecha_fin = request.args.get('fecha_fin')
         canal = request.args.get('canal')
+        numero_cuenta = request.args.get('numero_cuenta')
+        tipo_movimiento = request.args.get('tipo_movimiento')
 
         conn = get_connection()
         cur = conn.cursor()
@@ -365,6 +418,18 @@ def exportar_extracto_csv():
                 AND m.canal = %s
             """
             parametros.append(canal)
+
+        if numero_cuenta:
+            consulta += """
+                AND m.numero_cuenta = %s
+            """
+            parametros.append(numero_cuenta)
+
+        if tipo_movimiento:
+            consulta += """
+                AND m.tipo = %s
+            """
+            parametros.append(tipo_movimiento)
 
         consulta += """
             ORDER BY m.fecha_hora DESC
@@ -396,7 +461,8 @@ def exportar_extracto_csv():
             output.getvalue(),
             mimetype='text/csv',
             headers={
-                'Content-Disposition': 'attachment; filename=extracto.csv'
+                'Content-Disposition':
+                'attachment; filename=extracto.csv'
             }
         )
 
@@ -404,7 +470,94 @@ def exportar_extracto_csv():
         return str(e)
 
     finally:
+
         if cur:
             cur.close()
+
         if conn:
             conn.close()
+
+## Ruta para que el asociado solicite actualización de datos a un asesor
+@asociado_bp.route('/solicitar_actualizacion')
+def solicitar_actualizacion():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
+
+    return render_template(
+        'solicitar_actualizacion.html'
+    )
+
+## Ruta para guardar la solicitud de actualización de datos del asociado
+@asociado_bp.route(
+    '/solicitar_actualizacion/guardar',
+    methods=['POST']
+)
+def guardar_solicitud_actualizacion():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
+
+    conn = None
+    cur = None
+
+    try:
+
+        telefono = request.form.get('telefono')
+        correo = request.form.get('correo')
+        direccion = request.form.get('direccion')
+        municipio = request.form.get('municipio')
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO solicitud_actualizacion(
+                cedula_asociado,
+                telefono_nuevo,
+                correo_nuevo,
+                direccion_nueva,
+                municipio_nuevo
+            )
+            VALUES (%s,%s,%s,%s,%s)
+        """,
+        (
+            cedula,
+            telefono,
+            correo,
+            direccion,
+            municipio
+        ))
+
+        conn.commit()
+
+        flash(
+            'Solicitud enviada correctamente. Queda pendiente de aprobación.'
+        )
+
+    except Exception as e:
+
+        if conn:
+            conn.rollback()
+
+        flash(
+            f'Error al registrar solicitud: {e}'
+        )
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+    return redirect(
+        url_for('auth.dashboard_asociado')
+    )

@@ -193,6 +193,11 @@ def crear_agencia():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Creó agencia: {nombre} (Código: {codigo})'
+        )
+
         flash('Agencia creada correctamente')
 
     except Exception as e:
@@ -302,6 +307,11 @@ def actualizar_agencia(codigo):
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Actualizó agencia: {nombre} (Código: {codigo})'
+        )
 
         flash('Agencia actualizada correctamente')
 
@@ -498,6 +508,11 @@ def crear_empleado():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Creó empleado {cedula}'
+        )
+
         flash('Empleado registrado correctamente')
 
     except Exception as e:
@@ -671,6 +686,11 @@ def actualizar_empleado(cedula):
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Actualizó empleado {cedula}'
+        )
 
         flash('Empleado actualizado correctamente')
 

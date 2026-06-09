@@ -10,12 +10,22 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand fw-bold">Panel de Control del Asesor</span>
+
+            <span class="navbar-brand fw-bold">
+                Panel de Control del Asesor
+            </span>
+
             <div>
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">
+                <span class="text-white me-3">
+                    {{ session.usuario if session.usuario else "Asesor" }}
+                </span>
+
+                <a href="{{ url_for('auth.logout') }}"
+                   class="btn btn-outline-light btn-sm">
                     Cerrar Sesión
                 </a>
             </div>
+
         </div>
     </nav>
 
@@ -35,111 +45,190 @@
         <div class="row g-4">
 
             <!-- ASOCIADOS -->
+
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Asociados</h5>
+
                         <p class="text-muted small">
                             Consulta y registro de asociados, actualización de contacto y gestión de fundadores.
                         </p>
-                        <a href="{{ url_for('asesor.asociados') }}" class="btn btn-primary btn-sm">
+
+                        <a href="{{ url_for('asesor.asociados') }}"
+                           class="btn btn-primary btn-sm">
                             Ver Asociados
                         </a>
+
                     </div>
                 </div>
             </div>
 
             <!-- CUENTAS -->
+
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Cuentas de Ahorro</h5>
+
                         <p class="text-muted small">
                             Apertura de cuentas, consulta general y administración de operaciones de ahorro.
                         </p>
-                        <a href="{{ url_for('asesor.cuentas') }}" class="btn btn-success btn-sm">
+
+                        <a href="{{ url_for('asesor.cuentas') }}"
+                           class="btn btn-success btn-sm">
                             Ver Cuentas
                         </a>
+
                     </div>
                 </div>
             </div>
 
-            <!-- CREDITOS -->
+            <!-- CRÉDITOS -->
+
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Créditos</h5>
+
                         <p class="text-muted small">
                             Revisión de solicitudes radicadas, montos aprobados, estados y plazos vigentes.
                         </p>
+
                         <a href="{{ url_for('asesor.creditos') }}"
                            class="btn btn-warning btn-sm text-dark fw-bold">
                             Ver Créditos
                         </a>
+
                     </div>
                 </div>
             </div>
 
             <!-- BENEFICIARIOS -->
+
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Beneficiarios</h5>
+
                         <p class="text-muted small">
                             Registro y administración de beneficiarios de los asociados.
                         </p>
+
                         <a href="{{ url_for('asesor.beneficiarios') }}"
                            class="btn btn-info btn-sm text-white">
                             Ver Beneficiarios
                         </a>
+
                     </div>
                 </div>
             </div>
 
             <!-- MOVIMIENTOS -->
+
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Movimientos</h5>
+
                         <p class="text-muted small">
                             Registro de depósitos, retiros y transferencias sobre cuentas activas.
                         </p>
+
                         <a href="{{ url_for('asesor.movimientos') }}"
                            class="btn btn-secondary btn-sm">
                             Ver Movimientos
                         </a>
+
                     </div>
                 </div>
             </div>
 
             <!-- PAGOS -->
+
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Pagos y Codeudores</h5>
+
                         <p class="text-muted small">
                             Registro de pagos de cuotas y administración de codeudores asociados a créditos.
                         </p>
+
                         <a href="{{ url_for('asesor.pagos') }}"
                            class="btn btn-dark btn-sm">
                             Ver Pagos
                         </a>
+
                     </div>
                 </div>
             </div>
 
             <!-- ATENCIONES -->
+
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
+
                         <h5>Atenciones</h5>
+
                         <p class="text-muted small">
                             Registro y consulta de las atenciones realizadas por los empleados a los asociados.
                         </p>
+
                         <a href="{{ url_for('asesor.atenciones') }}"
                            class="btn btn-primary btn-sm">
                             Ver Atenciones
                         </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- CODEUDORES -->
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+
+                        <h5>Codeudores</h5>
+
+                        <p class="text-muted small">
+                            Administración de codeudores asociados a créditos vigentes.
+                        </p>
+
+                        <a href="{{ url_for('asesor.codeudores') }}"
+                           class="btn btn-outline-dark btn-sm">
+                            Ver Codeudores
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOLICITUDES DE ACTUALIZACIÓN -->
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 border-danger">
+                    <div class="card-body">
+
+                        <h5>Solicitudes de Actualización</h5>
+
+                        <p class="text-muted small">
+                            Revisa y aprueba los cambios de datos de contacto solicitados por los asociados.
+                        </p>
+
+                        <a href="{{ url_for('asesor.solicitudes_actualizacion') }}"
+                           class="btn btn-danger btn-sm">
+                            Gestionar Solicitudes
+                        </a>
+
                     </div>
                 </div>
             </div>

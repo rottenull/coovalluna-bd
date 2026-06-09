@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from db import get_connection
+from utils.bitacora import registrar_bitacora
 
 asesor_bp = Blueprint('asesor', __name__)
 
@@ -131,6 +132,11 @@ def crear_asociado():
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Creó asociado {cedula}'
+        )
 
         flash('Asociado registrado correctamente')
 
@@ -268,6 +274,11 @@ def actualizar_asociado(cedula):
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Actualizó asociado {cedula}'
+        )
 
         flash('Asociado actualizado correctamente')
 
@@ -495,6 +506,11 @@ def crear_fundador():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Registró fundador {cedula}'
+        )
+
         flash(
             'Fundador registrado correctamente'
         )
@@ -687,6 +703,11 @@ def crear_atencion():
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Registró atención: Empleado {cedula_empleado} - Asociado {cedula_asociado}'
+        )
 
         flash(
             'Atención registrada correctamente'
@@ -914,6 +935,11 @@ def crear_beneficiario():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Registró beneficiario {documento} para asociado {cedula_asociado}'
+        )
+
         flash(
             'Beneficiario registrado correctamente'
         )
@@ -1091,6 +1117,11 @@ def actualizar_beneficiario(documento):
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Actualizó beneficiario {documento} para asociado {cedula_asociado}'
+        )
 
         flash(
             'Beneficiario actualizado correctamente'
@@ -1291,6 +1322,11 @@ def crear_cuenta():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Creó cuenta {numero_cuenta}'
+        )
+
         flash(
             'Cuenta creada correctamente'
         )
@@ -1450,6 +1486,11 @@ def actualizar_cuenta(numero_cuenta):
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Actualizó cuenta {numero_cuenta}'
+        )
 
         flash(
             'Cuenta actualizada correctamente'
@@ -1729,6 +1770,11 @@ def crear_movimiento():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Registró movimiento {id_transaccion} tipo {tipo}'
+        )
+
         flash(
             'Movimiento registrado correctamente'
         )
@@ -1977,6 +2023,11 @@ def crear_credito():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Creó crédito {numero_radicado}'
+        )
+
         flash(
             'Crédito registrado correctamente'
         )
@@ -2177,6 +2228,11 @@ def actualizar_credito(numero_radicado):
         ))
 
         conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Actualizó crédito {numero_radicado}'
+        )
 
         flash(
             'Crédito actualizado correctamente'
@@ -2441,6 +2497,11 @@ def crear_codeudor():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Agregó codeudor {cedula_codeudor} al crédito {numero_radicado}'
+        )
+
         flash(
             'Codeudor registrado correctamente'
         )
@@ -2636,6 +2697,11 @@ def crear_pago():
 
         conn.commit()
 
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Registró pago cuota {numero_cuota} del crédito {numero_radicado}'
+        )
+
         flash(
             'Pago registrado correctamente'
         )
@@ -2660,3 +2726,219 @@ def crear_pago():
     return redirect(
         url_for('asesor.pagos')
     )
+
+## Listamos solicitudes de actualización
+@asesor_bp.route('/solicitudes_actualizacion')
+def solicitudes_actualizacion():
+
+    control = verificar_personal()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                s.id_solicitud,
+                s.cedula_asociado,
+                a.nombre,
+                a.apellido,
+                s.telefono_nuevo,
+                s.correo_nuevo,
+                s.direccion_nueva,
+                s.municipio_nuevo,
+                s.fecha_solicitud,
+                s.estado
+            FROM solicitud_actualizacion s
+            JOIN asociado a
+                ON s.cedula_asociado = a.cedula
+            WHERE s.estado = 'pendiente'
+            ORDER BY s.fecha_solicitud DESC
+        """)
+
+        solicitudes = cur.fetchall()
+
+        return render_template(
+            'solicitudes_actualizacion.html',
+            solicitudes=solicitudes
+        )
+
+    except Exception as e:
+
+        flash(
+            f'Error al consultar solicitudes: {e}'
+        )
+
+        return redirect(
+            url_for('auth.dashboard_asesor')
+        )
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+## aprobamos una solicitud de actualización
+@asesor_bp.route('/solicitudes/aprobar/<int:id_solicitud>', methods=['POST'])
+def aprobar_solicitud(id_solicitud):
+
+    conn = None
+    cur = None
+
+    try:
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        # Obtener datos solicitados
+
+        cur.execute("""
+            SELECT
+                cedula_asociado,
+                telefono_nuevo,
+                correo_nuevo,
+                direccion_nueva,
+                municipio_nuevo
+            FROM solicitud_actualizacion
+            WHERE id_solicitud = %s
+              AND estado = 'pendiente'
+        """, (id_solicitud,))
+
+        solicitud = cur.fetchone()
+
+        if not solicitud:
+            flash('Solicitud no encontrada')
+            return redirect(
+                url_for('asesor.solicitudes_actualizacion')
+            )
+
+        cedula = solicitud[0]
+        telefono = solicitud[1]
+        correo = solicitud[2]
+        direccion = solicitud[3]
+        municipio = solicitud[4]
+
+        # Actualizar asociado
+
+        cur.execute("""
+            UPDATE asociado
+            SET
+                telefono = %s,
+                correo = %s,
+                direccion = %s,
+                municipio = %s
+            WHERE cedula = %s
+        """,
+        (
+            telefono,
+            correo,
+            direccion,
+            municipio,
+            cedula
+        ))
+
+        # Marcar solicitud como aprobada
+
+        cur.execute("""
+            UPDATE solicitud_actualizacion
+            SET
+                estado = 'aprobada',
+                fecha_revision = CURRENT_TIMESTAMP,
+                asesor_revisor = %s
+            WHERE id_solicitud = %s
+        """,
+        (
+            session.get('usuario'),
+            id_solicitud
+        ))
+
+        conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Aprobó solicitud de actualización #{id_solicitud}'
+        )
+
+        flash('Solicitud aprobada correctamente')
+
+    except Exception as e:
+
+        if conn:
+            conn.rollback()
+
+        flash(f'Error: {e}')
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+    return redirect(
+        url_for('asesor.solicitudes_actualizacion')
+    )
+
+## rechazamos una solicitud de actualización
+@asesor_bp.route('/solicitudes/rechazar/<int:id_solicitud>', methods=['POST'])
+def rechazar_solicitud(id_solicitud):
+
+    conn = None
+    cur = None
+
+    try:
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            UPDATE solicitud_actualizacion
+            SET
+                estado = 'rechazada',
+                fecha_revision = CURRENT_TIMESTAMP,
+                asesor_revisor = %s
+            WHERE id_solicitud = %s
+        """,
+        (
+            session.get('usuario'),
+            id_solicitud
+        ))
+
+        conn.commit()
+
+        registrar_bitacora(
+            session.get('usuario'),
+            f'Rechazó solicitud de actualización #{id_solicitud}'
+        )
+
+        flash('Solicitud rechazada correctamente')
+
+    except Exception as e:
+
+        if conn:
+            conn.rollback()
+
+        flash(f'Error: {e}')
+
+    finally:
+
+        if cur:
+            cur.close()
+
+        if conn:
+            conn.close()
+
+    return redirect(
+        url_for('asesor.solicitudes_actualizacion')
+    )
+

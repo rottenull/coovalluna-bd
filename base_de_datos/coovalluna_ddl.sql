@@ -1,3 +1,33 @@
+CREATE TABLE solicitud_actualizacion (
+
+    id_solicitud SERIAL PRIMARY KEY,
+
+    cedula_asociado VARCHAR(20) NOT NULL,
+
+    telefono_nuevo VARCHAR(20),
+
+    correo_nuevo VARCHAR(100),
+
+    direccion_nueva VARCHAR(200),
+
+    municipio_nuevo VARCHAR(100),
+
+    fecha_solicitud TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP,
+
+    estado VARCHAR(20)
+        DEFAULT 'pendiente',
+
+    fecha_revision TIMESTAMP,
+
+    asesor_revisor VARCHAR(50),
+
+    CONSTRAINT fk_solicitud_asociacion
+        FOREIGN KEY (cedula_asociado)
+        REFERENCES asociado(cedula)
+
+);
+
 CREATE TABLE BITACORA (
 	ID_REGISTRO SERIAL PRIMARY KEY,
 	FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
