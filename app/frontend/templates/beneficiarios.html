@@ -1,10 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Beneficiarios</h2>
+
+        <a
+            href="{{ url_for('asesor.nuevo_beneficiario') }}"
+            class="btn btn-success"
+        >
+            Nuevo Beneficiario
+        </a>
+
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert alert-info alert-dismissible fade show">
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-striped table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Documento</th>
+                        <th>Nombre</th>
+                        <th>Parentesco</th>
+                        <th>Porcentaje</th>
+                        <th>Teléfono</th>
+                        <th>Asociado</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% if beneficiarios %}
+
+                    {% for beneficiario in beneficiarios %}
+
+                    <tr>
+
+                        <td>
+                            {{ beneficiario[0] }}
+                        </td>
+
+                        <td>
+                            {{ beneficiario[1] }}
+                        </td>
+
+                        <td>
+                            {{ beneficiario[2] }}
+                        </td>
+
+                        <td>
+                            {{ beneficiario[3] }}%
+                        </td>
+
+                        <td>
+                            {{ beneficiario[4] }}
+                        </td>
+
+                        <td>
+
+                            {{ beneficiario[5] }}
+                            {{ beneficiario[6] }}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for('asesor.editar_beneficiario', documento=beneficiario[0]) }}"
+                                class="btn btn-primary btn-sm"
+                            >
+                                Editar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="7" class="text-center">
+
+                            No existen beneficiarios registrados
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

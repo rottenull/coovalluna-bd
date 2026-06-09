@@ -1,10 +1,144 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Cuentas de Ahorro</h2>
+
+        <a href="{{ url_for('asesor.nueva_cuenta') }}"
+           class="btn btn-success">
+            Nueva Cuenta
+        </a>
+
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert alert-info alert-dismissible fade show">
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <table class="table table-striped table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Número Cuenta</th>
+                        <th>Fecha Apertura</th>
+                        <th>Estado</th>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Agencia</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% if cuentas %}
+
+                    {% for cuenta in cuentas %}
+
+                    <tr>
+
+                        <td>{{ cuenta[0] }}</td>
+                        <td>{{ cuenta[1] }}</td>
+
+                        <td>
+
+                            {% if cuenta[2] == 'activa' %}
+
+                                <span class="badge bg-success">
+                                    Activa
+                                </span>
+
+                            {% elif cuenta[2] == 'inactiva' %}
+
+                                <span class="badge bg-secondary">
+                                    Inactiva
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+                                    Embargada
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ cuenta[3] }}</td>
+                        <td>{{ cuenta[4] }}</td>
+                        <td>{{ cuenta[5] }}</td>
+                        <td>{{ cuenta[6] }}</td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for(
+                                    'asesor.editar_cuenta',
+                                    numero_cuenta=cuenta[0]
+                                ) }}"
+                                class="btn btn-primary btn-sm">
+
+                                Editar
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="8" class="text-center">
+
+                            No existen cuentas registradas
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

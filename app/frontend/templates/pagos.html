@@ -1,10 +1,158 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Pagos de Créditos</h2>
+
+        <div>
+
+            <a
+                href="{{ url_for('asesor.codeudores') }}"
+                class="btn btn-primary"
+            >
+                Ver Codeudores
+            </a>
+
+            <a
+                href="{{ url_for('asesor.nuevo_pago') }}"
+                class="btn btn-success"
+            >
+                Registrar Pago
+            </a>
+
+        </div>
+
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert alert-info alert-dismissible fade show">
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-striped table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Radicado</th>
+                        <th>Cuota</th>
+                        <th>Fecha Pago</th>
+                        <th>Valor Pagado</th>
+                        <th>Estado</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% if pagos %}
+
+                        {% for pago in pagos %}
+
+                        <tr>
+
+                            <td>
+                                {{ pago[0] }}
+                            </td>
+
+                            <td>
+                                {{ pago[1] }}
+                            </td>
+
+                            <td>
+                                {{ pago[2] }}
+                            </td>
+
+                            <td>
+                                $ {{ "{:,.0f}".format(pago[3]) }}
+                            </td>
+
+                            <td>
+
+                                {% if pago[4] == 'a tiempo' %}
+
+                                    <span class="badge bg-success">
+
+                                        {{ pago[4] }}
+
+                                    </span>
+
+                                {% elif pago[4] == 'pagado con mora' %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        {{ pago[4] }}
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        {{ pago[4] }}
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="text-center"
+                            >
+
+                                No existen pagos registrados
+
+                            </td>
+
+                        </tr>
+
+                    {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

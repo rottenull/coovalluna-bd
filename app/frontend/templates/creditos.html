@@ -1,10 +1,166 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Gestión de Créditos</h2>
+
+        <a
+            href="{{ url_for('asesor.nuevo_credito') }}"
+            class="btn btn-success"
+        >
+            Nuevo Crédito
+        </a>
+
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert alert-info alert-dismissible fade show">
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-striped table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Radicado</th>
+                        <th>Solicitado</th>
+                        <th>Aprobado</th>
+                        <th>Plazo</th>
+                        <th>Tasa (%)</th>
+                        <th>Línea</th>
+                        <th>Estado</th>
+                        <th>Asociado</th>
+                        <th>Agencia</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% if creditos %}
+
+                    {% for credito in creditos %}
+
+                    <tr>
+
+                        <td>{{ credito[0] }}</td>
+
+                        <td>
+                            $ {{ "{:,.0f}".format(credito[1]) }}
+                        </td>
+
+                        <td>
+                            $ {{ "{:,.0f}".format(credito[2]) }}
+                        </td>
+
+                        <td>{{ credito[3] }}</td>
+
+                        <td>{{ credito[4] }}</td>
+
+                        <td>{{ credito[5] }}</td>
+
+                        <td>
+
+                            {% if credito[6] == 'aprobado' %}
+
+                                <span class="badge bg-success">
+                                    {{ credito[6] }}
+                                </span>
+
+                            {% elif credito[6] == 'en mora' %}
+
+                                <span class="badge bg-danger">
+                                    {{ credito[6] }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ credito[6] }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {{ credito[7] }}
+                            {{ credito[8] }}
+
+                        </td>
+
+                        <td>{{ credito[9] }}</td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for(
+                                    'asesor.editar_credito',
+                                    numero_radicado=credito[0]
+                                ) }}"
+                                class="btn btn-primary btn-sm"
+                            >
+                                Editar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="10" class="text-center">
+
+                            No existen créditos registrados
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

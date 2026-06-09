@@ -341,51 +341,47 @@ def menu_reportes():
 
             consulta = f"""
                 SELECT
-                    e.cedula_emple,
+                    e.cedulaemple,
                     e.nombre || ' ' || e.apellido AS asesor,
                     ag.nombre AS agencia,
-                    COUNT(DISTINCT at.cedula_asociado) AS asociados_atendidos,
-                    COUNT(DISTINCT c.numero_radicado) AS creditos_radicados,
-                    COALESCE(SUM(DISTINCT c.valor_aprobado), 0) AS valor_total_aprobado,
-                    COUNT(DISTINCT ca.numero_cuenta) AS cuentas_abiertas
+
+                    COUNT(DISTINCT at.cedulaasociado) AS asociados_atendidos,
+
+                    COUNT(DISTINCT c.numeroradicado) AS creditos_radicados,
+
+                    COALESCE(SUM(DISTINCT c.valoraprobado), 0) AS valor_total_aprobado,
+
+                    COUNT(DISTINCT ca.numerocuenta) AS cuentas_abiertas
+
                 FROM empleado e
                 JOIN agencia ag
-                    ON e.codigo_agencia = ag.codigo
+                    ON e.codigoagencia = ag.codigo
                 LEFT JOIN atiende at
-                    ON at.cedula_empleado = e.cedula_emple
-                    {"AND at.fecha_atencion >= %s" if fecha_inicio else ""}
-                    {"AND at.fecha_atencion <= %s" if fecha_fin else ""}
+                    ON at.cedulaempleado = e.cedulaemple
                 LEFT JOIN credito c
-                    ON c.codigo_agencia = e.codigo_agencia
-                    {"AND c.fecha_aprobacion >= %s" if fecha_inicio else ""}
-                    {"AND c.fecha_aprobacion <= %s" if fecha_fin else ""}
-                LEFT JOIN cuenta_ahorro ca
-                    ON ca.codigo_agencia = e.codigo_agencia
-                    {"AND ca.fecha_apertura >= %s" if fecha_inicio else ""}
-                    {"AND ca.fecha_apertura <= %s" if fecha_fin else ""}
+                    ON c.codigoagencia = e.codigoagencia
+                LEFT JOIN cuentaahorro ca
+                    ON ca.codigoagencia = e.codigoagencia
                 WHERE LOWER(e.cargo) LIKE '%asesor%'
             """
 
             params = []
 
-            if fecha_inicio:
-                params.append(fecha_inicio)
-            if fecha_fin:
-                params.append(fecha_fin)
-
-            if fecha_inicio:
-                params.append(fecha_inicio)
-            if fecha_fin:
-                params.append(fecha_fin)
-
-            if fecha_inicio:
-                params.append(fecha_inicio)
-            if fecha_fin:
-                params.append(fecha_fin)
-
             if agencia:
                 consulta += " AND e.codigoagencia = %s"
                 params.append(agencia)
+
+            if fecha_inicio:
+                consulta += " AND (at.fechaatencion IS NULL OR at.fechaatencion >= %s)"
+                consulta += " AND (c.fechaaprobacion IS NULL OR c.fechaaprobacion >= %s)"
+                consulta += " AND (ca.fechaapertura IS NULL OR ca.fechaapertura >= %s)"
+                params.extend([fecha_inicio, fecha_inicio, fecha_inicio])
+
+            if fecha_fin:
+                consulta += " AND (at.fechaatencion IS NULL OR at.fechaatencion <= %s)"
+                consulta += " AND (c.fechaaprobacion IS NULL OR c.fechaaprobacion <= %s)"
+                consulta += " AND (ca.fechaapertura IS NULL OR ca.fechaapertura <= %s)"
+                params.extend([fecha_fin, fecha_fin, fecha_fin])
 
             consulta += f"""
                 GROUP BY e.cedulaemple, e.nombre, e.apellido, ag.nombre
@@ -400,10 +396,10 @@ def menu_reportes():
                     'cedula_emple': fila[0],
                     'asesor': fila[1],
                     'agencia': fila[2],
-                    'asociados_atendidos': fila[3],
-                    'creditos_radicados': fila[4],
-                    'valor_total_aprobado': fila[5],
-                    'cuentas_abiertas': fila[6]
+                    'asociados_atendidos': fila[3] if fila[3] is not None else 0,
+                    'creditos_radicados': fila[4] if fila[4] is not None else 0,
+                    'valor_total_aprobado': fila[5] if fila[5] is not None else 0,
+                    'cuentas_abiertas': fila[6] if fila[6] is not None else 0
                 })
 
         # -------------------------------
@@ -474,7 +470,8 @@ def menu_reportes():
         )
 
     except Exception as e:
-        return f"Error al generar reportes: {e}"
+        import traceback
+        return f"<pre>Error al generar reportes: {e}\n\n{traceback.format_exc()}</pre>"
 
     finally:
         if cur:

@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>Registrar Movimiento</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="alert alert-info alert-dismissible fade show">
+
+                            {{ message }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                            ></button>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+            {% endwith %}
+
+            <form
+                method="POST"
+                action="{{ url_for('asesor.crear_movimiento') }}"
+            >
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            ID Transacción
+                        </label>
+
+                        <input
+                            type="number"
+                            name="id_transaccion"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Fecha y Hora
+                        </label>
+
+                        <input
+                            type="datetime-local"
+                            name="fecha_hora"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Tipo de Movimiento
+                        </label>
+
+                        <select
+                            name="tipo"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione
+                            </option>
+
+                            <option value="depósito">
+                                Depósito
+                            </option>
+
+                            <option value="retiro">
+                                Retiro
+                            </option>
+
+                            <option value="transferencia entrante">
+                                Transferencia Entrante
+                            </option>
+
+                            <option value="transferencia saliente">
+                                Transferencia Saliente
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Valor
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="1"
+                            name="valor"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Canal
+                        </label>
+
+                        <select
+                            name="canal"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione
+                            </option>
+
+                            <option value="oficina">
+                                Oficina
+                            </option>
+
+                            <option value="cajero">
+                                Cajero
+                            </option>
+
+                            <option value="web">
+                                Web
+                            </option>
+
+                            <option value="app">
+                                App Móvil
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Cuenta
+                        </label>
+
+                        <select
+                            name="numero_cuenta"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione una cuenta
+                            </option>
+
+                            {% for cuenta in cuentas %}
+
+                                <option value="{{ cuenta[0] }}">
+
+                                    {{ cuenta[0] }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Cuenta Destino / Origen
+                    </label>
+
+                    <input
+                        type="number"
+                        name="cuenta_destino_origen"
+                        class="form-control"
+                    >
+
+                    <div class="form-text">
+
+                        Obligatorio únicamente para transferencias.
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+                        Registrar Movimiento
+                    </button>
+
+                    <a
+                        href="{{ url_for('asesor.movimientos') }}"
+                        class="btn btn-secondary"
+                    >
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

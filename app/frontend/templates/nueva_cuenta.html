@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>Nueva Cuenta de Ahorro</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="alert alert-info">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+            {% endwith %}
+
+            <form
+                method="POST"
+                action="{{ url_for('asesor.crear_cuenta') }}"
+            >
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Número de Cuenta
+                        </label>
+
+                        <input
+                            type="number"
+                            name="numero_cuenta"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Fecha de Apertura
+                        </label>
+
+                        <input
+                            type="date"
+                            name="fecha_apertura"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Estado
+                        </label>
+
+                        <select
+                            name="estado"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione
+                            </option>
+
+                            <option value="activa">
+                                Activa
+                            </option>
+
+                            <option value="inactiva">
+                                Inactiva
+                            </option>
+
+                            <option value="embargada">
+                                Embargada
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Asociado
+                        </label>
+
+                        <select
+                            name="cedula_asociado"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione un asociado
+                            </option>
+
+                            {% for asociado in asociados %}
+
+                            <option value="{{ asociado[0] }}">
+
+                                {{ asociado[1] }}
+                                {{ asociado[2] }}
+                                ({{ asociado[0] }})
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Agencia
+                    </label>
+
+                    <select
+                        name="codigo_agencia"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccione una agencia
+                        </option>
+
+                        {% for agencia in agencias %}
+
+                        <option value="{{ agencia[0] }}">
+
+                            {{ agencia[1] }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+                        Guardar Cuenta
+                    </button>
+
+                    <a
+                        href="{{ url_for('asesor.cuentas') }}"
+                        class="btn btn-secondary"
+                    >
+                        Volver
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
