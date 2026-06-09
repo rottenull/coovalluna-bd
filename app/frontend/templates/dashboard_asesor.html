@@ -12,20 +12,29 @@
         <div class="container-fluid">
             <span class="navbar-brand fw-bold">Panel de Control del Asesor</span>
             <div>
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">
+                    Cerrar Sesión
+                </a>
             </div>
         </div>
     </nav>
 
     <div class="container">
+
         <div class="p-4 bg-white rounded shadow-sm mb-4">
+
             <h2>Bienvenido al Sistema del Asesor</h2>
+
             <p class="text-secondary">
-                Seleccione un módulo para gestionar asociados, cuentas de ahorro, créditos, pagos y demás operaciones permitidas.
+                Seleccione un módulo para gestionar asociados, cuentas de ahorro,
+                créditos, pagos y demás operaciones permitidas.
             </p>
+
         </div>
 
         <div class="row g-4">
+
+            <!-- ASOCIADOS -->
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
@@ -33,11 +42,14 @@
                         <p class="text-muted small">
                             Consulta y registro de asociados, actualización de contacto y gestión de fundadores.
                         </p>
-                        <a href="{{ url_for('asesor.asociados') }}" class="btn btn-primary btn-sm">Ver Asociados</a>
+                        <a href="{{ url_for('asesor.asociados') }}" class="btn btn-primary btn-sm">
+                            Ver Asociados
+                        </a>
                     </div>
                 </div>
             </div>
 
+            <!-- CUENTAS -->
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
@@ -45,11 +57,14 @@
                         <p class="text-muted small">
                             Apertura de cuentas, consulta general y administración de operaciones de ahorro.
                         </p>
-                        <a href="{{ url_for('asesor.cuentas') }}" class="btn btn-success btn-sm">Ver Cuentas</a>
+                        <a href="{{ url_for('asesor.cuentas') }}" class="btn btn-success btn-sm">
+                            Ver Cuentas
+                        </a>
                     </div>
                 </div>
             </div>
 
+            <!-- CREDITOS -->
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
@@ -57,11 +72,15 @@
                         <p class="text-muted small">
                             Revisión de solicitudes radicadas, montos aprobados, estados y plazos vigentes.
                         </p>
-                        <a href="{{ url_for('asesor.creditos') }}" class="btn btn-warning btn-sm text-dark fw-bold">Ver Créditos</a>
+                        <a href="{{ url_for('asesor.creditos') }}"
+                           class="btn btn-warning btn-sm text-dark fw-bold">
+                            Ver Créditos
+                        </a>
                     </div>
                 </div>
             </div>
 
+            <!-- BENEFICIARIOS -->
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
@@ -69,11 +88,15 @@
                         <p class="text-muted small">
                             Registro y administración de beneficiarios de los asociados.
                         </p>
-                        <a href="{{ url_for('asesor.beneficiarios') }}" class="btn btn-info btn-sm text-white">Ver Beneficiarios</a>
+                        <a href="{{ url_for('asesor.beneficiarios') }}"
+                           class="btn btn-info btn-sm text-white">
+                            Ver Beneficiarios
+                        </a>
                     </div>
                 </div>
             </div>
 
+            <!-- MOVIMIENTOS -->
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
@@ -81,11 +104,15 @@
                         <p class="text-muted small">
                             Registro de depósitos, retiros y transferencias sobre cuentas activas.
                         </p>
-                        <a href="{{ url_for('asesor.movimientos') }}" class="btn btn-secondary btn-sm">Ver Movimientos</a>
+                        <a href="{{ url_for('asesor.movimientos') }}"
+                           class="btn btn-secondary btn-sm">
+                            Ver Movimientos
+                        </a>
                     </div>
                 </div>
             </div>
 
+            <!-- PAGOS -->
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
@@ -93,11 +120,32 @@
                         <p class="text-muted small">
                             Registro de pagos de cuotas y administración de codeudores asociados a créditos.
                         </p>
-                        <a href="{{ url_for('asesor.pagos') }}" class="btn btn-dark btn-sm">Ver Pagos</a>
+                        <a href="{{ url_for('asesor.pagos') }}"
+                           class="btn btn-dark btn-sm">
+                            Ver Pagos
+                        </a>
                     </div>
                 </div>
             </div>
+
+            <!-- ATENCIONES -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5>Atenciones</h5>
+                        <p class="text-muted small">
+                            Registro y consulta de las atenciones realizadas por los empleados a los asociados.
+                        </p>
+                        <a href="{{ url_for('asesor.atenciones') }}"
+                           class="btn btn-primary btn-sm">
+                            Ver Atenciones
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
 </body>

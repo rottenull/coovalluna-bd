@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}
+Atenciones
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>
+        Gestión de Atenciones
+    </h2>
+
+    <a href="{{ url_for('asesor.nueva_atencion') }}"
+       class="btn btn-primary">
+
+        Nueva Atención
+
+    </a>
+
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <p class="text-muted mb-3">
+
+            Registro de atenciones realizadas por los empleados a los asociados.
+
+        </p>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Empleado</th>
+                        <th>Asociado</th>
+                        <th>Fecha Atención</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for atencion in atenciones %}
+
+                    <tr>
+
+                        <td>
+                            {{ atencion[0] }} -
+                            {{ atencion[1] }}
+                            {{ atencion[2] }}
+                        </td>
+
+                        <td>
+                            {{ atencion[3] }} -
+                            {{ atencion[4] }}
+                            {{ atencion[5] }}
+                        </td>
+
+                        <td>
+                            {{ atencion[6] }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="3" class="text-center text-muted">
+
+                            No existen atenciones registradas.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
