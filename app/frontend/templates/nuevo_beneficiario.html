@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>Registrar Beneficiario</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="alert alert-info alert-dismissible fade show">
+
+                            {{ message }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                            ></button>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+            {% endwith %}
+
+            <form
+                method="POST"
+                action="{{ url_for('asesor.crear_beneficiario') }}"
+            >
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Documento
+                        </label>
+
+                        <input
+                            type="text"
+                            name="documento"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Nombre Completo
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nombre"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Parentesco
+                        </label>
+
+                        <select
+                            name="parentesco"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione
+                            </option>
+
+                            <option value="cónyuge">
+                                Cónyuge
+                            </option>
+
+                            <option value="hijo/a">
+                                Hijo(a)
+                            </option>
+
+                            <option value="padre">
+                                Padre
+                            </option>
+
+                            <option value="madre">
+                                Madre
+                            </option>
+
+                            <option value="hermano/a">
+                                Hermano(a)
+                            </option>
+
+                            <option value="otro">
+                                Otro
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Porcentaje (%)
+                        </label>
+
+                        <input
+                            type="number"
+                            name="porcentaje"
+                            class="form-control"
+                            min="1"
+                            max="100"
+                            step="0.01"
+                            required
+                        >
+
+                        <small class="text-muted">
+
+                            La suma de todos los beneficiarios no puede superar el 100%.
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Teléfono
+                        </label>
+
+                        <input
+                            type="text"
+                            name="telefono"
+                            class="form-control"
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Asociado
+                        </label>
+
+                        <select
+                            name="cedula_asociado"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione un asociado
+                            </option>
+
+                            {% for asociado in asociados %}
+
+                                <option value="{{ asociado[0] }}">
+
+                                    {{ asociado[1] }}
+                                    {{ asociado[2] }}
+                                    ({{ asociado[0] }})
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+                        Registrar Beneficiario
+                    </button>
+
+                    <a
+                        href="{{ url_for('asesor.beneficiarios') }}"
+                        class="btn btn-secondary"
+                    >
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
