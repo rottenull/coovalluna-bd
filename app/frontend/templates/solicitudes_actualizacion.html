@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}
+Solicitudes de Actualización
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Solicitudes de Actualización de Datos
+</h2>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        {% if solicitudes %}
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Asociado</th>
+                            <th>Teléfono Nuevo</th>
+                            <th>Correo Nuevo</th>
+                            <th>Dirección Nueva</th>
+                            <th>Municipio Nuevo</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for solicitud in solicitudes %}
+
+                        <tr>
+
+                            <td>{{ solicitud[0] }}</td>
+
+                            <td>{{ solicitud[1] }}</td>
+
+                            <td>{{ solicitud[2] }}</td>
+
+                            <td>{{ solicitud[3] }}</td>
+
+                            <td>{{ solicitud[4] }}</td>
+
+                            <td>{{ solicitud[5] }}</td>
+
+                            <td>{{ solicitud[6] }}</td>
+
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    {{ solicitud[7] }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <form method="POST"
+                                      action="{{ url_for('asesor.aprobar_solicitud', id_solicitud=solicitud[0]) }}"
+                                      class="d-inline">
+
+                                    <button type="submit"
+                                            class="btn btn-success btn-sm">
+
+                                        Aprobar
+
+                                    </button>
+
+                                </form>
+
+                                <form method="POST"
+                                      action="{{ url_for('asesor.rechazar_solicitud', id_solicitud=solicitud[0]) }}"
+                                      class="d-inline">
+
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm">
+
+                                        Rechazar
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-info">
+
+                No existen solicitudes pendientes de revisión.
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
