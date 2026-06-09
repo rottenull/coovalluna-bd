@@ -341,52 +341,51 @@ def menu_reportes():
 
             consulta = f"""
                 SELECT
-                    e.cedulaemple,
+                    e.cedula_emple,
                     e.nombre || ' ' || e.apellido AS asesor,
                     ag.nombre AS agencia,
-
-                    COUNT(DISTINCT at.cedulaasociado) AS asociados_atendidos,
-
-                    COUNT(DISTINCT c.numeroradicado) AS creditos_radicados,
-
-                    COALESCE(SUM(DISTINCT c.valoraprobado), 0) AS valor_total_aprobado,
-
-                    COUNT(DISTINCT ca.numerocuenta) AS cuentas_abiertas
-
+                    COUNT(DISTINCT at.cedula_asociado) AS asociados_atendidos,
+                    COUNT(DISTINCT c.numero_radicado) AS creditos_radicados,
+                    COALESCE(SUM(DISTINCT c.valor_aprobado), 0) AS valor_total_aprobado,
+                    COUNT(DISTINCT ca.numero_cuenta) AS cuentas_abiertas
                 FROM empleado e
                 JOIN agencia ag
-                    ON e.codigoagencia = ag.codigo
+                    ON e.codigo_agencia = ag.codigo
                 LEFT JOIN atiende at
-                    ON at.cedulaempleado = e.cedulaemple
+                    ON at.cedula_empleado = e.cedula_emple
                 LEFT JOIN credito c
-                    ON c.codigoagencia = e.codigoagencia
-                LEFT JOIN cuentaahorro ca
-                    ON ca.codigoagencia = e.codigoagencia
-                WHERE LOWER(e.cargo) LIKE '%asesor%'
+                    ON c.codigo_agencia = e.codigo_agencia
+                LEFT JOIN cuenta_ahorro ca
+                    ON ca.codigo_agencia = e.codigo_agencia
+                WHERE 1 = 1
             """
 
             params = []
 
             if agencia:
-                consulta += " AND e.codigoagencia = %s"
+                consulta += " AND e.codigo_agencia = %s"
                 params.append(agencia)
 
             if fecha_inicio:
-                consulta += " AND (at.fechaatencion IS NULL OR at.fechaatencion >= %s)"
-                consulta += " AND (c.fechaaprobacion IS NULL OR c.fechaaprobacion >= %s)"
-                consulta += " AND (ca.fechaapertura IS NULL OR ca.fechaapertura >= %s)"
+                consulta += " AND (at.fecha_atencion IS NULL OR at.fecha_atencion >= %s)"
+                consulta += " AND (c.fecha_aprobacion IS NULL OR c.fecha_aprobacion >= %s)"
+                consulta += " AND (ca.fecha_apertura IS NULL OR ca.fecha_apertura >= %s)"
                 params.extend([fecha_inicio, fecha_inicio, fecha_inicio])
 
             if fecha_fin:
-                consulta += " AND (at.fechaatencion IS NULL OR at.fechaatencion <= %s)"
-                consulta += " AND (c.fechaaprobacion IS NULL OR c.fechaaprobacion <= %s)"
-                consulta += " AND (ca.fechaapertura IS NULL OR ca.fechaapertura <= %s)"
+                consulta += " AND (at.fecha_atencion IS NULL OR at.fecha_atencion <= %s)"
+                consulta += " AND (c.fecha_aprobacion IS NULL OR c.fecha_aprobacion <= %s)"
+                consulta += " AND (ca.fecha_apertura IS NULL OR ca.fecha_apertura <= %s)"
                 params.extend([fecha_fin, fecha_fin, fecha_fin])
 
             consulta += f"""
-                GROUP BY e.cedulaemple, e.nombre, e.apellido, ag.nombre
+                GROUP BY e.cedula_emple, e.nombre, e.apellido, ag.nombre
                 ORDER BY {orden_sql} DESC, asesor
             """
+
+            print("REPORTE:", reporte)
+            print("CONSULTA:", consulta)
+            print("PARAMS:", params)
 
             cur.execute(consulta, params)
             resultados = cur.fetchall()
@@ -401,7 +400,7 @@ def menu_reportes():
                     'valor_total_aprobado': fila[5] if fila[5] is not None else 0,
                     'cuentas_abiertas': fila[6] if fila[6] is not None else 0
                 })
-
+                
         # -------------------------------
         # 7. ASOCIADOS CON CODEUDORA ACTIVA
         # -------------------------------
