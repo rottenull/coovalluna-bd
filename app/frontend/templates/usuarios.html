@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Usuarios y Roles</h2>
+
+    <div class="mb-3">
+        <a href="{{ url_for('admin.nuevo_usuario') }}" class="btn btn-primary">
+            Nuevo usuario
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Cédula empleado</th>
+                <th>Cédula asociado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u[0] }}</td>
+                <td>{{ u[1] }}</td>
+                <td>{{ u[2] }}</td>
+                <td>{{ u[3] }}</td>
+                <td>{{ u[4] if u[4] else '-' }}</td>
+                <td>{{ u[5] if u[5] else '-' }}</td>
+                <td>
+                    <a href="{{ url_for('admin.editar_usuario', id_usuario=u[0]) }}"
+                       class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No hay usuarios registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

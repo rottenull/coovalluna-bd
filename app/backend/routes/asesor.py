@@ -1,12 +1,21 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from db import get_connection
 
 asesor_bp = Blueprint('asesor', __name__)
 
+def verificar_personal():
+    if session.get('rol') not in ['admin', 'asesor']:
+        flash('Acceso no autorizado')
+        return redirect(url_for('auth.login'))
+    return None
 
 ## Listamos los asociados
 @asesor_bp.route('/asociados')
 def asociados():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -58,6 +67,10 @@ def asociados():
 @asesor_bp.route('/asociados/nuevo')
 def nuevo_asociado():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     return render_template(
         'nuevo_asociado.html'
     )
@@ -65,6 +78,10 @@ def nuevo_asociado():
 ## Creamos un nuevo asociado
 @asesor_bp.route('/asociados/crear', methods=['POST'])
 def crear_asociado():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -140,6 +157,10 @@ def crear_asociado():
 @asesor_bp.route('/asociados/editar/<cedula>')
 def editar_asociado(cedula):
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -196,6 +217,10 @@ def editar_asociado(cedula):
 ## Actualizamos un asociado
 @asesor_bp.route('/asociados/actualizar/<cedula>', methods=['POST'])
 def actualizar_asociado(cedula):
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -316,6 +341,10 @@ def cambiar_estado_asociado(cedula):
 @asesor_bp.route('/fundadores')
 def fundadores():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -365,6 +394,10 @@ def fundadores():
 ## Formulario nuevo fundador
 @asesor_bp.route('/fundadores/nuevo')
 def nuevo_fundador():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -417,6 +450,10 @@ def nuevo_fundador():
     methods=['POST']
 )
 def crear_fundador():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -483,9 +520,13 @@ def crear_fundador():
         url_for('asesor.fundadores')
     )
 
-## Listamos las atenciones 
+## Listamos las atenciones
 @asesor_bp.route('/atenciones')
 def atenciones():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -539,10 +580,14 @@ def atenciones():
 
         if conn:
             conn.close()
-        
+
 ## Formulario nueva atención
 @asesor_bp.route('/atenciones/nueva')
 def nueva_atencion():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -602,6 +647,10 @@ def nueva_atencion():
     methods=['POST']
 )
 def crear_atencion():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -668,6 +717,10 @@ def crear_atencion():
 @asesor_bp.route('/beneficiarios')
 def beneficiarios():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -720,6 +773,10 @@ def beneficiarios():
 @asesor_bp.route('/beneficiarios/nuevo')
 def nuevo_beneficiario():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -763,6 +820,10 @@ def nuevo_beneficiario():
 ## Creamos un beneficiario - Restringimos a máximo 4 beneficiarios por asociado y porcentaje acumulado máximo 100%
 @asesor_bp.route('/beneficiarios/crear', methods=['POST'])
 def crear_beneficiario():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -876,11 +937,15 @@ def crear_beneficiario():
 
     return redirect(
         url_for('asesor.beneficiarios')
-    )            
+    )
 
 ## Editamos un beneficiario
 @asesor_bp.route('/beneficiarios/editar/<documento>')
 def editar_beneficiario(documento):
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -953,6 +1018,10 @@ def editar_beneficiario(documento):
     methods=['POST']
 )
 def actualizar_beneficiario(documento):
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -1052,6 +1121,10 @@ def actualizar_beneficiario(documento):
 @asesor_bp.route('/cuentas')
 def cuentas():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -1105,6 +1178,10 @@ def cuentas():
 ## Formulario nueva cuenta
 @asesor_bp.route('/cuentas/nueva')
 def nueva_cuenta():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -1161,6 +1238,10 @@ def nueva_cuenta():
 ## Creamos una cuenta
 @asesor_bp.route('/cuentas/crear', methods=['POST'])
 def crear_cuenta():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -1238,6 +1319,10 @@ def crear_cuenta():
 ## Editamos una cuenta
 @asesor_bp.route('/cuentas/editar/<int:numero_cuenta>')
 def editar_cuenta(numero_cuenta):
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -1319,6 +1404,10 @@ def editar_cuenta(numero_cuenta):
 )
 def actualizar_cuenta(numero_cuenta):
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -1394,6 +1483,10 @@ def actualizar_cuenta(numero_cuenta):
 )
 def cambiar_estado_cuenta(numero_cuenta):
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -1447,6 +1540,10 @@ def cambiar_estado_cuenta(numero_cuenta):
 @asesor_bp.route('/movimientos')
 def movimientos():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -1496,6 +1593,10 @@ def movimientos():
 @asesor_bp.route('/movimientos/nuevo')
 def nuevo_movimiento():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -1541,6 +1642,10 @@ def nuevo_movimiento():
     methods=['POST']
 )
 def crear_movimiento():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -1653,6 +1758,10 @@ def crear_movimiento():
 @asesor_bp.route('/creditos')
 def creditos():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -1708,6 +1817,10 @@ def creditos():
 ## Formulario nuevo crédito
 @asesor_bp.route('/creditos/nuevo')
 def nuevo_credito():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -1765,6 +1878,10 @@ def nuevo_credito():
 ## Creamos un crédito
 @asesor_bp.route('/creditos/crear', methods=['POST'])
 def crear_credito():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -1889,6 +2006,10 @@ def crear_credito():
 @asesor_bp.route('/creditos/editar/<int:numero_radicado>')
 def editar_credito(numero_radicado):
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -1960,6 +2081,10 @@ def editar_credito(numero_radicado):
     methods=['POST']
 )
 def actualizar_credito(numero_radicado):
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -2077,7 +2202,7 @@ def actualizar_credito(numero_radicado):
     return redirect(
         url_for('asesor.creditos')
     )
-    
+
 
 ## Cambiamos el estado de un crédito
 @asesor_bp.route(
@@ -2085,6 +2210,10 @@ def actualizar_credito(numero_radicado):
     methods=['POST']
 )
 def cambiar_estado_credito(numero_radicado):
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -2137,6 +2266,10 @@ def cambiar_estado_credito(numero_radicado):
 @asesor_bp.route('/codeudores')
 def codeudores():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -2185,6 +2318,10 @@ def codeudores():
 ## Formulario nuevo codeudor
 @asesor_bp.route('/codeudores/nuevo')
 def nuevo_codeudor():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -2243,6 +2380,10 @@ def nuevo_codeudor():
     methods=['POST']
 )
 def crear_codeudor():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -2329,6 +2470,10 @@ def crear_codeudor():
 @asesor_bp.route('/pagos')
 def pagos():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -2379,6 +2524,10 @@ def pagos():
 @asesor_bp.route('/pagos/nuevo')
 def nuevo_pago():
 
+    control = verificar_personal()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -2423,6 +2572,10 @@ def nuevo_pago():
     methods=['POST']
 )
 def crear_pago():
+
+    control = verificar_personal()
+    if control:
+        return control
 
     conn = None
     cur = None

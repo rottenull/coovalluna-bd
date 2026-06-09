@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>COOVALLUNA — Iniciar sesión</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -70,12 +69,9 @@
 <body>
 
 <div class="container-fluid p-0" style="min-height:100vh; display:flex;">
-
     <div class="row g-0 w-100">
 
-        <!-- PANEL IZQUIERDO -->
         <div class="col-md-5 panel-marca">
-
             <div>
                 <h2>COOVALLUNA</h2>
                 <p>
@@ -85,15 +81,22 @@
                     Acceso restringido a personal autorizado.
                 </p>
             </div>
-
         </div>
 
-        <!-- PANEL DERECHO -->
         <div class="col-md-7 panel-formulario">
-
             <div class="tarjeta-login">
 
                 <h1>Iniciar sesión</h1>
+
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="alert alert-warning" role="alert">
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
 
                 <form method="post">
 
@@ -105,22 +108,12 @@
                            placeholder="Nombre de usuario"
                            required>
 
-                    <label for="rol" class="form-label">Rol</label>
-                    <select id="rol"
-                            name="rol"
-                            class="form-select mb-3"
-                            required>
-                        <option value="">Selecciona un rol</option>
-                        <option value="admin">Administrador</option>
-                        <option value="asesor">Asesor</option>
-                        <option value="asociado">Asociado</option>
-                    </select>
-
                     <label for="contrasena" class="form-label">Contraseña</label>
                     <input type="password"
                            id="contrasena"
                            name="contrasena"
                            class="form-control mb-4"
+                           placeholder="Ingresa tu contraseña"
                            required>
 
                     <button type="submit"
@@ -133,57 +126,33 @@
                 </form>
 
             </div>
-
         </div>
 
     </div>
-
 </div>
 
 <script>
-
 const usuario = document.getElementById("usuario");
-const rol = document.getElementById("rol");
 const contrasena = document.getElementById("contrasena");
 const boton = document.getElementById("btnEntrar");
 
 function validarFormulario() {
+    const usuarioValido = usuario.value.trim() !== "";
+    const contrasenaValida = contrasena.value.trim() !== "";
 
-    const usuarioValido =
-        usuario.value.trim() !== "";
-
-    const rolValido =
-        rol.value !== "";
-
-    const contrasenaValida =
-        contrasena.value.trim() !== "";
-
-    if (
-        usuarioValido &&
-        rolValido &&
-        contrasenaValida
-    ) {
-
+    if (usuarioValido && contrasenaValida) {
         boton.disabled = false;
-
         boton.classList.remove("btn-secondary");
         boton.classList.add("btn-primary");
-
     } else {
-
         boton.disabled = true;
-
         boton.classList.remove("btn-primary");
         boton.classList.add("btn-secondary");
-
     }
-
 }
 
 usuario.addEventListener("input", validarFormulario);
-rol.addEventListener("change", validarFormulario);
 contrasena.addEventListener("input", validarFormulario);
-
 </script>
 
 </body>

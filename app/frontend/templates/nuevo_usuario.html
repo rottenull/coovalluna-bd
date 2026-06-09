@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Nuevo usuario</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('admin.crear_usuario') }}">
+        <div class="mb-3">
+            <label class="form-label">Usuario</label>
+            <input type="text" name="usuario" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="text" name="contrasena" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Rol</label>
+            <select name="rol" class="form-select" required>
+                <option value="">Seleccione</option>
+                <option value="admin">admin</option>
+                <option value="asesor">asesor</option>
+                <option value="asociado">asociado</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select name="estado" class="form-select" required>
+                <option value="activo">activo</option>
+                <option value="inactivo">inactivo</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Empleado (solo admin o asesor)</label>
+            <select name="cedula_empleado" class="form-select">
+                <option value="">Seleccione</option>
+                {% for e in empleados %}
+                <option value="{{ e[0] }}">{{ e[0] }} - {{ e[1] }} {{ e[2] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Asociado (solo rol asociado)</label>
+            <select name="cedula_asociado" class="form-select">
+                <option value="">Seleccione</option>
+                {% for a in asociados %}
+                <option value="{{ a[0] }}">{{ a[0] }} - {{ a[1] }} {{ a[2] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{{ url_for('admin.usuarios') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,11 +1,22 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from db import get_connection
+from utils.bitacora import registrar_bitacora
 
 admin_bp = Blueprint('admin', __name__)
+
+def verificar_admin():
+    if session.get('rol') != 'admin':
+        flash('Acceso no autorizado')
+        return redirect(url_for('auth.login'))
+    return None
 
 ## Consultar bitácora de auditoría
 @admin_bp.route('/auditoria')
 def auditoria():
+
+    control = verificar_admin()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -87,6 +98,10 @@ def auditoria():
 @admin_bp.route('/agencias')
 def agencias():
 
+    control = verificar_admin()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -124,6 +139,10 @@ def agencias():
 @admin_bp.route('/agencias/nueva')
 def nueva_agencia():
 
+    control = verificar_admin()
+    if control:
+        return control
+
     return render_template(
         'nueva_agencia.html'
     )
@@ -132,6 +151,10 @@ def nueva_agencia():
 ## Creamos una nueva agencia
 @admin_bp.route('/agencias/crear', methods=['POST'])
 def crear_agencia():
+
+    control = verificar_admin()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -194,6 +217,10 @@ def crear_agencia():
 @admin_bp.route('/agencias/editar/<int:codigo>')
 def editar_agencia(codigo):
 
+    control = verificar_admin()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -237,6 +264,10 @@ def editar_agencia(codigo):
 ## Actualizamos una agencia
 @admin_bp.route('/agencias/actualizar/<int:codigo>', methods=['POST'])
 def actualizar_agencia(codigo):
+
+    control = verificar_admin()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -296,6 +327,10 @@ def actualizar_agencia(codigo):
 @admin_bp.route('/empleados')
 def empleados():
 
+    control = verificar_admin()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -347,6 +382,10 @@ def empleados():
 ## Formulario nuevo empleado
 @admin_bp.route('/empleados/nuevo')
 def nuevo_empleado():
+
+    control = verificar_admin()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -404,6 +443,10 @@ def nuevo_empleado():
 ## Creamos un nuevo empleado
 @admin_bp.route('/empleados/crear', methods=['POST'])
 def crear_empleado():
+
+    control = verificar_admin()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -477,6 +520,10 @@ def crear_empleado():
 ## Editamos un empleado
 @admin_bp.route('/empleados/editar/<cedula>')
 def editar_empleado(cedula):
+
+    control = verificar_admin()
+    if control:
+        return control
 
     conn = None
     cur = None
@@ -564,6 +611,10 @@ def editar_empleado(cedula):
 @admin_bp.route('/empleados/actualizar/<cedula>', methods=['POST'])
 def actualizar_empleado(cedula):
 
+    control = verificar_admin()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -644,6 +695,10 @@ def actualizar_empleado(cedula):
 @admin_bp.route('/empleados/cambiar_estado/<cedula>', methods=['POST'])
 def cambiar_estado_empleado(cedula):
 
+    control = verificar_admin()
+    if control:
+        return control
+
     conn = None
     cur = None
 
@@ -686,5 +741,373 @@ def cambiar_estado_empleado(cedula):
     return redirect(
         url_for('admin.empleados')
     )
+
+## Listamos usuarios y roles
+@admin_bp.route('/usuarios')
+def usuarios():
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                id_usuario,
+                usuario,
+                rol,
+                estado,
+                cedula_empleado,
+                cedula_asociado
+            FROM usuario_sistema
+            ORDER BY usuario
+        """)
+
+        usuarios = cur.fetchall()
+
+        return render_template(
+            'usuarios.html',
+            usuarios=usuarios
+        )
+
+    except Exception as e:
+        flash(f'Error al consultar usuarios: {e}')
+        return render_template(
+            'usuarios.html',
+            usuarios=[]
+        )
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+
+## Formulario nuevo usuario
+@admin_bp.route('/usuarios/nuevo')
+def nuevo_usuario():
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                cedula_emple,
+                nombre,
+                apellido
+            FROM empleado
+            ORDER BY nombre, apellido
+        """)
+        empleados = cur.fetchall()
+
+        cur.execute("""
+            SELECT
+                cedula,
+                nombre,
+                apellido
+            FROM asociado
+            ORDER BY nombre, apellido
+        """)
+        asociados = cur.fetchall()
+
+        return render_template(
+            'nuevo_usuario.html',
+            empleados=empleados,
+            asociados=asociados
+        )
+
+    except Exception as e:
+        flash(f'Error al cargar formulario: {e}')
+        return redirect(url_for('admin.usuarios'))
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+
+## Creamos un nuevo usuario
+@admin_bp.route('/usuarios/crear', methods=['POST'])
+def crear_usuario():
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+        usuario = request.form.get('usuario')
+        contrasena = request.form.get('contrasena')
+        rol = request.form.get('rol')
+        estado = request.form.get('estado')
+        cedula_empleado = request.form.get('cedula_empleado') or None
+        cedula_asociado = request.form.get('cedula_asociado') or None
+
+        if not usuario or not contrasena or not rol or not estado:
+            flash('Debes completar los campos obligatorios')
+            return redirect(url_for('admin.nuevo_usuario'))
+
+        if rol in ['admin', 'asesor']:
+            if not cedula_empleado:
+                flash('Para rol admin o asesor debes seleccionar un empleado')
+                return redirect(url_for('admin.nuevo_usuario'))
+            cedula_asociado = None
+
+        elif rol == 'asociado':
+            if not cedula_asociado:
+                flash('Para rol asociado debes seleccionar un asociado')
+                return redirect(url_for('admin.nuevo_usuario'))
+            cedula_empleado = None
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO usuario_sistema (
+                usuario,
+                contrasena,
+                rol,
+                estado,
+                cedula_empleado,
+                cedula_asociado
+            )
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (
+            usuario,
+            contrasena,
+            rol,
+            estado,
+            cedula_empleado,
+            cedula_asociado
+        ))
+
+        conn.commit()
+
+        if session.get('usuario'):
+            registrar_bitacora(
+                session.get('usuario'),
+                f'Creó usuario del sistema: {usuario} ({rol})'
+            )
+
+        flash('Usuario creado correctamente')
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        flash(f'Error al crear usuario: {e}')
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+    return redirect(url_for('admin.usuarios'))
+
+## Formulario editar usuario
+@admin_bp.route('/usuarios/editar/<int:id_usuario>')
+def editar_usuario(id_usuario):
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT
+                id_usuario,
+                usuario,
+                rol,
+                estado,
+                cedula_empleado,
+                cedula_asociado
+            FROM usuario_sistema
+            WHERE id_usuario = %s
+        """, (id_usuario,))
+
+        usuario = cur.fetchone()
+
+        if not usuario:
+            flash('Usuario no encontrado')
+            return redirect(url_for('admin.usuarios'))
+
+        cur.execute("""
+            SELECT
+                cedula_emple,
+                nombre,
+                apellido
+            FROM empleado
+            ORDER BY nombre, apellido
+        """)
+        empleados = cur.fetchall()
+
+        cur.execute("""
+            SELECT
+                cedula,
+                nombre,
+                apellido
+            FROM asociado
+            ORDER BY nombre, apellido
+        """)
+        asociados = cur.fetchall()
+
+        return render_template(
+            'editar_usuario.html',
+            usuario=usuario,
+            empleados=empleados,
+            asociados=asociados
+        )
+
+    except Exception as e:
+        flash(f'Error al cargar usuario: {e}')
+        return redirect(url_for('admin.usuarios'))
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+
+## Actualizar rol y estado de usuario
+@admin_bp.route('/usuarios/actualizar/<int:id_usuario>', methods=['POST'])
+def actualizar_usuario(id_usuario):
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+        rol = request.form.get('rol')
+        estado = request.form.get('estado')
+        cedula_empleado = request.form.get('cedula_empleado') or None
+        cedula_asociado = request.form.get('cedula_asociado') or None
+
+        if not rol or not estado:
+            flash('Debes completar rol y estado')
+            return redirect(url_for('admin.editar_usuario', id_usuario=id_usuario))
+
+        if rol in ['admin', 'asesor']:
+            if not cedula_empleado:
+                flash('Para rol admin o asesor debes seleccionar un empleado')
+                return redirect(url_for('admin.editar_usuario', id_usuario=id_usuario))
+            cedula_asociado = None
+
+        elif rol == 'asociado':
+            if not cedula_asociado:
+                flash('Para rol asociado debes seleccionar un asociado')
+                return redirect(url_for('admin.editar_usuario', id_usuario=id_usuario))
+            cedula_empleado = None
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            UPDATE usuario_sistema
+            SET
+                rol = %s,
+                estado = %s,
+                cedula_empleado = %s,
+                cedula_asociado = %s
+            WHERE id_usuario = %s
+        """, (
+            rol,
+            estado,
+            cedula_empleado,
+            cedula_asociado,
+            id_usuario
+        ))
+
+        conn.commit()
+
+        flash('Usuario actualizado correctamente')
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        flash(f'Error al actualizar usuario: {e}')
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+    return redirect(url_for('admin.usuarios'))
+
+
+## Restablecer contraseña
+@admin_bp.route('/usuarios/restablecer_contrasena/<int:id_usuario>', methods=['POST'])
+def restablecer_contrasena(id_usuario):
+
+    control = verificar_admin()
+    if control:
+        return control
+
+    conn = None
+    cur = None
+
+    try:
+        nueva_contrasena = request.form.get('nueva_contrasena')
+
+        if not nueva_contrasena:
+            flash('Debes escribir una nueva contraseña')
+            return redirect(url_for('admin.editar_usuario', id_usuario=id_usuario))
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            UPDATE usuario_sistema
+            SET contrasena = %s
+            WHERE id_usuario = %s
+        """, (
+            nueva_contrasena,
+            id_usuario
+        ))
+
+        conn.commit()
+
+        flash('Contraseña restablecida correctamente')
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        flash(f'Error al restablecer contraseña: {e}')
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
+    return redirect(url_for('admin.editar_usuario', id_usuario=id_usuario))
 
 ## 11

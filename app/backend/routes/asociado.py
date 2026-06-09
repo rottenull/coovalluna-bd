@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template, request, Response
-## Agregamos Response para la ruta de descarga de extracto en formato CSV
+from flask import Blueprint, render_template, request, Response, session, redirect, url_for, flash
 import csv
 from io import StringIO
 from db import get_connection
@@ -9,18 +8,23 @@ asociado_bp = Blueprint(
     __name__
 )
 
-# Temporal mientras se implementa autenticación real
-CEDULA_PRUEBA = '12345678' 
+def obtener_cedula_asociado():
+    return session.get('cedula_asociado')
 
-## Ruta para mostrar los datos del asociado
+
 @asociado_bp.route('/mis_datos')
 def mis_datos():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
 
     conn = None
     cur = None
 
     try:
-
         conn = get_connection()
         cur = conn.cursor()
 
@@ -38,7 +42,7 @@ def mis_datos():
                 estado
             FROM asociado
             WHERE cedula = %s
-        """, (CEDULA_PRUEBA,))
+        """, (cedula,))
 
         asociado = cur.fetchone()
 
@@ -48,26 +52,28 @@ def mis_datos():
         )
 
     except Exception as e:
-
         return str(e)
 
     finally:
-
         if cur:
             cur.close()
-
         if conn:
             conn.close()
 
-## Ruta para mostrar las cuentas del asociado + el saldo calculado a partir de los movimientos asociados a cada cuenta
+
 @asociado_bp.route('/mis_cuentas')
 def mis_cuentas():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
 
     conn = None
     cur = None
 
     try:
-
         conn = get_connection()
         cur = conn.cursor()
 
@@ -81,7 +87,6 @@ def mis_cuentas():
                 COALESCE(
                     SUM(
                         CASE
-
                             WHEN m.tipo IN (
                                 'depósito',
                                 'transferencia entrante'
@@ -95,7 +100,6 @@ def mis_cuentas():
                             THEN -m.valor
 
                             ELSE 0
-
                         END
                     ),
                     0
@@ -104,8 +108,7 @@ def mis_cuentas():
             FROM cuenta_ahorro c
 
             LEFT JOIN movimiento m
-                ON c.numero_cuenta =
-                   m.numero_cuenta
+                ON c.numero_cuenta = m.numero_cuenta
 
             WHERE c.cedula_asociado = %s
 
@@ -116,7 +119,7 @@ def mis_cuentas():
                 c.codigo_agencia
 
             ORDER BY c.numero_cuenta
-        """, (CEDULA_PRUEBA,))
+        """, (cedula,))
 
         cuentas = cur.fetchall()
 
@@ -126,26 +129,28 @@ def mis_cuentas():
         )
 
     except Exception as e:
-
         return str(e)
 
     finally:
-
         if cur:
             cur.close()
-
         if conn:
             conn.close()
 
-## Ruta para mostrar los créditos del asociado
+
 @asociado_bp.route('/mis_creditos')
 def mis_creditos():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
 
     conn = None
     cur = None
 
     try:
-
         conn = get_connection()
         cur = conn.cursor()
 
@@ -161,7 +166,7 @@ def mis_creditos():
             FROM credito
             WHERE cedula_asociado = %s
             ORDER BY numero_radicado
-        """, (CEDULA_PRUEBA,))
+        """, (cedula,))
 
         creditos = cur.fetchall()
 
@@ -171,37 +176,31 @@ def mis_creditos():
         )
 
     except Exception as e:
-
         return str(e)
 
     finally:
-
         if cur:
             cur.close()
-
         if conn:
             conn.close()
 
-## Ruta para mostrar el extracto del asociado con filtros opcionales
+
 @asociado_bp.route('/extracto')
 def extracto():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
 
     conn = None
     cur = None
 
     try:
-
-        fecha_inicio = request.args.get(
-            'fecha_inicio'
-        )
-
-        fecha_fin = request.args.get(
-            'fecha_fin'
-        )
-
-        canal = request.args.get(
-            'canal'
-        )
+        fecha_inicio = request.args.get('fecha_inicio')
+        fecha_fin = request.args.get('fecha_fin')
+        canal = request.args.get('canal')
 
         conn = get_connection()
         cur = conn.cursor()
@@ -216,12 +215,11 @@ def extracto():
                 m.numero_cuenta
             FROM movimiento m
             JOIN cuenta_ahorro c
-                ON m.numero_cuenta =
-                   c.numero_cuenta
+                ON m.numero_cuenta = c.numero_cuenta
             WHERE c.cedula_asociado = %s
         """
 
-        parametros = [CEDULA_PRUEBA]
+        parametros = [cedula]
 
         if fecha_inicio:
             consulta += """
@@ -257,34 +255,32 @@ def extracto():
             movimientos=movimientos
         )
 
-    finally:
+    except Exception as e:
+        return str(e)
 
+    finally:
         if cur:
             cur.close()
-
         if conn:
             conn.close()
 
-## Ruta para descargar el extracto del asociado en formato CSV con los mismos filtros que la ruta anterior
+
 @asociado_bp.route('/extracto/csv')
 def exportar_extracto_csv():
+
+    cedula = obtener_cedula_asociado()
+
+    if not cedula:
+        flash('Debes iniciar sesión como asociado')
+        return redirect(url_for('auth.login'))
 
     conn = None
     cur = None
 
     try:
-
-        fecha_inicio = request.args.get(
-            'fecha_inicio'
-        )
-
-        fecha_fin = request.args.get(
-            'fecha_fin'
-        )
-
-        canal = request.args.get(
-            'canal'
-        )
+        fecha_inicio = request.args.get('fecha_inicio')
+        fecha_fin = request.args.get('fecha_fin')
+        canal = request.args.get('canal')
 
         conn = get_connection()
         cur = conn.cursor()
@@ -299,12 +295,11 @@ def exportar_extracto_csv():
                 m.numero_cuenta
             FROM movimiento m
             JOIN cuenta_ahorro c
-                ON m.numero_cuenta =
-                   c.numero_cuenta
+                ON m.numero_cuenta = c.numero_cuenta
             WHERE c.cedula_asociado = %s
         """
 
-        parametros = [CEDULA_PRUEBA]
+        parametros = [cedula]
 
         if fecha_inicio:
             consulta += """
@@ -336,7 +331,6 @@ def exportar_extracto_csv():
         movimientos = cur.fetchall()
 
         output = StringIO()
-
         writer = csv.writer(output)
 
         writer.writerow([
@@ -349,26 +343,21 @@ def exportar_extracto_csv():
         ])
 
         for movimiento in movimientos:
-
             writer.writerow(movimiento)
 
         return Response(
             output.getvalue(),
             mimetype='text/csv',
             headers={
-                'Content-Disposition':
-                'attachment; filename=extracto.csv'
+                'Content-Disposition': 'attachment; filename=extracto.csv'
             }
         )
-    
-    except Exception as e:
 
+    except Exception as e:
         return str(e)
 
     finally:
-
         if cur:
             cur.close()
-
         if conn:
             conn.close()
