@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning">
+            <h3>Editar Crédito</h3>
+        </div>
+
+        <div class="card-body">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+
+                        <div class="alert alert-info alert-dismissible fade show">
+
+                            {{ message }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                            </button>
+
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form
+                method="POST"
+                action="{{ url_for('asesor.actualizar_credito', numero_radicado=credito[0]) }}"
+            >
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Número de Radicado
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        value="{{ credito[0] }}"
+                        readonly
+                    >
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Valor Solicitado
+                        </label>
+
+                        <input
+                            type="number"
+                            name="valor_solicitado"
+                            class="form-control"
+                            value="{{ credito[1] }}"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Valor Aprobado
+                        </label>
+
+                        <input
+                            type="number"
+                            name="valor_aprobado"
+                            class="form-control"
+                            value="{{ credito[2] }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Plazo
+                        </label>
+
+                        <input
+                            type="number"
+                            name="plazo"
+                            class="form-control"
+                            value="{{ credito[3] }}"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Tasa de Interés
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="tasa_interes"
+                            class="form-control"
+                            value="{{ credito[4] }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Fecha de Aprobación
+                        </label>
+
+                        <input
+                            type="date"
+                            name="fecha_aprobacion"
+                            class="form-control"
+                            value="{{ credito[5] }}"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Primer Vencimiento
+                        </label>
+
+                        <input
+                            type="date"
+                            name="fecha_primer_vencimiento"
+                            class="form-control"
+                            value="{{ credito[6] }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Línea de Crédito
+                    </label>
+
+                    <input
+                        type="text"
+                        name="linea_credito"
+                        class="form-control"
+                        value="{{ credito[7] }}"
+                        required
+                    >
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Estado
+                        </label>
+
+                        <select
+                            name="estado"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="aprobado"
+                                {% if credito[8] == 'aprobado' %}
+                                selected
+                                {% endif %}
+                            >
+                                Aprobado
+                            </option>
+
+                            <option value="pendiente"
+                                {% if credito[8] == 'pendiente' %}
+                                selected
+                                {% endif %}
+                            >
+                                Pendiente
+                            </option>
+
+                            <option value="rechazado"
+                                {% if credito[8] == 'rechazado' %}
+                                selected
+                                {% endif %}
+                            >
+                                Rechazado
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Asociado
+                        </label>
+
+                        <select
+                            name="cedula_asociado"
+                            class="form-select"
+                            required
+                        >
+
+                            {% for asociado in asociados %}
+
+                                <option
+                                    value="{{ asociado[0] }}"
+                                    {% if asociado[0] == credito[9] %}
+                                    selected
+                                    {% endif %}
+                                >
+
+                                    {{ asociado[1] }}
+                                    {{ asociado[2] }}
+                                    ({{ asociado[0] }})
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Agencia
+                    </label>
+
+                    <select
+                        name="codigo_agencia"
+                        class="form-select"
+                        required
+                    >
+
+                        {% for agencia in agencias %}
+
+                            <option
+                                value="{{ agencia[0] }}"
+                                {% if agencia[0] == credito[10] %}
+                                selected
+                                {% endif %}
+                            >
+
+                                {{ agencia[1] }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-warning"
+                    >
+                        Actualizar Crédito
+                    </button>
+
+                    <a
+                        href="{{ url_for('asesor.creditos') }}"
+                        class="btn btn-secondary"
+                    >
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

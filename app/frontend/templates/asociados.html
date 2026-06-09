@@ -11,13 +11,28 @@ Asociados
 </h3>
 
 <div class="d-flex gap-2 mb-3">
-    <a href="/asociados/nuevo" class="btn btn-secondary">
+
+    <a
+        href="{{ url_for('asesor.nuevo_asociado') }}"
+        class="btn btn-secondary"
+    >
         Registrar Nuevo Asociado
     </a>
 
-    <a href="/dashboard/admin" class="btn btn-light border">
+    <a
+        href="{{ url_for('asesor.fundadores') }}"
+        class="btn btn-info text-white"
+    >
+        Ver Fundadores
+    </a>
+
+    <a
+        href="/dashboard/admin"
+        class="btn btn-light border"
+    >
         Volver
     </a>
+
 </div>
 
 <div class="border p-2 small mb-4">
@@ -26,8 +41,11 @@ Asociados
 </div>
 
 <div class="table-responsive">
+
     <table class="table table-bordered table-hover">
+
         <thead>
+
             <tr>
                 <th>Cédula</th>
                 <th>Nombres</th>
@@ -38,36 +56,68 @@ Asociados
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
+
         </thead>
 
         <tbody>
+
             {% if asociados %}
+
                 {% for asociado in asociados %}
+
                 <tr>
+
                     <td>{{ asociado[0] }}</td>
-                    <td>{{ asociado[1] }} {{ asociado[2] }}</td>
-                    <td>{{ asociado[3] }}</td>
-                    <td>{{ asociado[4] }}</td>
-                    <td>{{ asociado[5] }}</td>
-                    <td>{{ asociado[6] }}</td>
-                    <td>{{ asociado[7] }}</td>
+
                     <td>
-                        <a href="/asociados/editar/{{ asociado[0] }}"
-                           class="btn btn-sm btn-light border">
+                        {{ asociado[1] }}
+                        {{ asociado[2] }}
+                    </td>
+
+                    <td>{{ asociado[3] }}</td>
+
+                    <td>{{ asociado[4] }}</td>
+
+                    <td>{{ asociado[5] }}</td>
+
+                    <td>{{ asociado[6] }}</td>
+
+                    <td>{{ asociado[7] }}</td>
+
+                    <td>
+
+                        <a
+                            href="/asociados/editar/{{ asociado[0] }}"
+                            class="btn btn-sm btn-light border"
+                        >
                             Editar
                         </a>
+
                     </td>
+
                 </tr>
+
                 {% endfor %}
+
             {% else %}
+
                 <tr>
-                    <td colspan="8" class="text-center text-muted">
+
+                    <td
+                        colspan="8"
+                        class="text-center text-muted"
+                    >
                         No hay asociados registrados.
                     </td>
+
                 </tr>
+
             {% endif %}
+
         </tbody>
+
     </table>
+
 </div>
 
 {% endblock %}
