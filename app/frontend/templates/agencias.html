@@ -7,183 +7,90 @@ Agencias
 {% block content %}
 
 <h3 class="mb-4">
-
-    Registrar Nueva Agencia
-
+    Agencias Registradas
 </h3>
 
-<div class="card">
+<div class="d-flex gap-2 mb-3">
 
-    <div class="card-body">
+    <a href="{{ url_for('admin.nueva_agencia') }}"
+       class="btn btn-primary">
+        Nueva Agencia
+    </a>
 
-        <p class="border p-2">
-
-            Complete todos los campos marcados con (*) para registrar una nueva sede en el sistema.
-
-        </p>
-
-        <form method="POST">
-
-            <div class="mb-3">
-
-                <label class="form-label">
-
-                    Código único (*)
-
-                </label>
-
-                <input type="text"
-                       name="codigo_agencia"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-
-                    Nombre de la Agencia (*)
-
-                </label>
-
-                <input type="text"
-                       name="nombre_agencia"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-
-                    Dirección (*)
-
-                </label>
-
-                <input type="text"
-                       name="direccion"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-
-                    Municipio (*)
-
-                </label>
-
-            <input type="text" name="municipio" class="form-control" required>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-
-                    Teléfono (*)
-
-                </label>
-
-                <input type="text"
-                       name="telefono"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-4">
-
-                <label class="form-label">
-
-                    Fecha de Apertura (*)
-
-                </label>
-
-                <input type="date"
-                       name="fecha_apertura"
-                       class="form-control">
-
-            </div>
-
-            <div class="d-flex gap-2 justify-content-end">
-
-                <button type="submit"
-                        class="btn btn-secondary">
-
-                    Guardar Agencia
-
-                </button>
-
-                <button type="reset"
-                        class="btn btn-light border">
-
-                    Limpiar Formulario
-
-                </button>
-
-                <a href="/dashboard/admin"
-                   class="btn btn-light border">
-
-                    Cancelar
-
-                </a>
-
-            </div>
-
-        </form>
-
-    </div>
+    <a href="/dashboard/admin"
+       class="btn btn-secondary">
+        Volver
+    </a>
 
 </div>
 
-<div class="border mt-3 p-2 text-center small">
-
-    Al guardar, la agencia quedará disponible inmediatamente para la vinculación de empleados, cuentas y créditos.
-
-</div>
-
-<hr class="my-4">
-
-<h4>
-
-    Agencias Registradas
-
-</h4>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
 <div class="table-responsive">
 
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover">
 
-        <thead>
+        <thead class="table-dark">
 
             <tr>
-
                 <th>Código</th>
                 <th>Nombre</th>
+                <th>Dirección</th>
                 <th>Municipio</th>
                 <th>Teléfono</th>
                 <th>Fecha Apertura</th>
-
+                <th>Acciones</th>
             </tr>
 
         </thead>
 
         <tbody>
 
-            {% for agencia in agencias %}
+            {% if agencias %}
 
-            <tr>
+                {% for agencia in agencias %}
 
-                <td>{{ agencia[0] }}</td>
-                <td>{{ agencia[1] }}</td>
-                <td>{{ agencia[3] }}</td>
-                <td>{{ agencia[4] }}</td>
-                <td>{{ agencia[5] }}</td>
+                <tr>
 
-            </tr>
+                    <td>{{ agencia[0] }}</td>
+                    <td>{{ agencia[1] }}</td>
+                    <td>{{ agencia[2] }}</td>
+                    <td>{{ agencia[3] }}</td>
+                    <td>{{ agencia[4] }}</td>
+                    <td>{{ agencia[5] }}</td>
 
-            {% endfor %}
+                    <td>
+
+                        <a href="{{ url_for('admin.editar_agencia', codigo=agencia[0]) }}"
+                           class="btn btn-warning btn-sm">
+                            Editar
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="7" class="text-center">
+                        No hay agencias registradas.
+                    </td>
+
+                </tr>
+
+            {% endif %}
 
         </tbody>
 

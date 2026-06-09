@@ -7,293 +7,122 @@ Empleados
 {% block content %}
 
 <h3 class="mb-4">
-    Registrar Nuevo Empleado
+    Empleados Registrados
 </h3>
 
-<form method="POST">
-
-    <!-- DATOS PERSONALES -->
-
-    <div class="card mb-4">
-
-        <div class="card-header">
-            <strong>Datos Personales</strong>
-        </div>
-
-        <div class="card-body">
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Cédula (*)
-                </label>
-
-                <input type="text"
-                       name="cedula"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Nombres (*)
-                </label>
-
-                <input type="text"
-                       name="nombres"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Apellidos (*)
-                </label>
-
-                <input type="text"
-                       name="apellidos"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Correo Corporativo (*)
-                </label>
-
-                <input type="email"
-                       name="correo"
-                       class="form-control">
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- INFORMACIÓN LABORAL -->
-
-    <div class="card mb-4">
-
-        <div class="card-header">
-            <strong>Información Laboral y Estructura</strong>
-        </div>
-
-        <div class="card-body">
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Cargo (*)
-                </label>
-
-                <select class="form-select"
-                        name="id_cargo">
-
-                    {% for cargo in cargos %}
-
-                    <option value="{{ cargo.id_cargo }}">
-                        {{ cargo.nombre_cargo }}
-                    </option>
-
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Fecha de Ingreso (*)
-                </label>
-
-                <input type="date"
-                       name="fecha_ingreso"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Salario Base (*)
-                </label>
-
-                <input type="number"
-                       name="salario"
-                       class="form-control">
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Estado Laboral (*)
-                </label>
-
-                <select class="form-select"
-                        name="estado">
-
-                    <option value="activo">
-                        Activo
-                    </option>
-
-                    <option value="inactivo">
-                        Inactivo
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Agencia de Adscripción (*)
-                </label>
-
-                <select class="form-select"
-                        name="agencia">
-
-                    {% for agencia in agencias %}
-
-                    <option value="{{ agencia.codigo_agencia }}">
-                        {{ agencia.nombre_agencia }}
-                    </option>
-
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Tipo de Labor (*)
-                </label>
-
-                <div class="form-check">
-
-                    <input class="form-check-input"
-                           type="radio"
-                           name="tipo_labor"
-                           value="ventanilla">
-
-                    <label class="form-check-label">
-                        Atención en ventanilla (Cajero)
-                    </label>
-
-                </div>
-
-                <div class="form-check">
-
-                    <input class="form-check-input"
-                           type="radio"
-                           name="tipo_labor"
-                           value="asesor">
-
-                    <label class="form-check-label">
-                        Asesoría / Promoción
-                    </label>
-
-                </div>
-
-                <div class="form-check">
-
-                    <input class="form-check-input"
-                           type="radio"
-                           name="tipo_labor"
-                           value="director">
-
-                    <label class="form-check-label">
-                        Dirección administrativa u operativa
-                    </label>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="d-flex gap-2">
-
-        <button type="submit"
-                class="btn btn-secondary">
-
-            Guardar Empleado
-
-        </button>
-
-        <button type="reset"
-                class="btn btn-light border">
-
-            Limpiar Formulario
-
-        </button>
-
-        <a href="/dashboard/admin"
-           class="btn btn-light border">
-
-            Cancelar
-
-        </a>
-
-    </div>
-
-</form>
-
-<div class="border mt-4 p-2 small">
-
-    Nota: Cada empleado debe estar vinculado obligatoriamente a una única sede operativa para efectos de auditoría y reportes de productividad.
+<div class="d-flex gap-2 mb-3">
+
+    <a href="{{ url_for('admin.nuevo_empleado') }}"
+       class="btn btn-secondary">
+        Registrar Nuevo Empleado
+    </a>
+
+    <a href="{{ url_for('admin.agencias') }}"
+       class="btn btn-light border">
+        Ver Agencias
+    </a>
+
+    <a href="{{ url_for('auth.dashboard_admin') }}"
+       class="btn btn-light border">
+        Volver
+    </a>
 
 </div>
 
-<hr class="my-4">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info alert-dismissible fade show">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
-<h4>
-    Empleados Registrados
-</h4>
+<div class="border p-2 small mb-4">
+
+    Desde este módulo el administrador puede consultar,
+    registrar y actualizar la información de los empleados
+    de la cooperativa.
+
+</div>
 
 <div class="table-responsive">
 
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover">
 
-        <thead>
+        <thead class="table-light">
 
             <tr>
-
                 <th>Cédula</th>
-                <th>Nombre</th>
+                <th>Nombre Completo</th>
                 <th>Cargo</th>
                 <th>Agencia</th>
                 <th>Estado</th>
-
+                <th>Acciones</th>
             </tr>
 
         </thead>
 
         <tbody>
 
-            {% for empleado in empleados %}
+            {% if empleados %}
 
-            <tr>
+                {% for empleado in empleados %}
 
-                <td>{{ empleado[0] }}</td>
-                <td>{{ empleado[1] }} {{ empleado[2] }}</td>
-                <td>{{ empleado[3] }}</td>
-                <td>{{ empleado[4] }}</td>
-                <td>{{ empleado[5] }}</td>
+                <tr>
 
-            </tr>
+                    <td>
+                        {{ empleado[0] }}
+                    </td>
 
-            {% endfor %}
+                    <td>
+                        {{ empleado[1] }} {{ empleado[2] }}
+                    </td>
+
+                    <td>
+                        {{ empleado[3] }}
+                    </td>
+
+                    <td>
+                        {{ empleado[4] }}
+                    </td>
+
+                    <td>
+                        {{ empleado[5] }}
+                    </td>
+
+                    <td>
+
+                        <a href="{{ url_for('admin.editar_empleado', cedula=empleado[0]) }}"
+                           class="btn btn-sm btn-primary">
+                            Editar
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="6"
+                        class="text-center text-muted">
+
+                        No hay empleados registrados.
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
 
         </tbody>
 
